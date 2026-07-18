@@ -1,0 +1,19 @@
+.sound-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  border: 1px solid #5a4a32;
+  background: rgba(20, 18, 14, 0.85);
+  color: #f5e7c8;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(4px);
+}
+.sound-toggle:hover {
+  border-color: #c39260;
+  color: #ffd28a;
+}

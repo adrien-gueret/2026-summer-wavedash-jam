@@ -1,0 +1,4 @@
+game_id = "todo_wavedash_game_id"
+upload_dir = "dist"
+
+entrypoint = "index.html"
