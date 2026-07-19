@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import { WavedashProvider } from "wavedash-react";
 
-import { StateProvider } from "@/services/state";
+import { StateProvider } from "@/state";
 
 import "./index.css";
 import Router from "./Router";
