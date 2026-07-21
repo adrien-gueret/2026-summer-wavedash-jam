@@ -1,0 +1,96 @@
+.family-tree {
+  width: 100%;
+  /* Shared connector styling so every line matches. */
+  --connector-color: #7a2e12;
+  --connector-width: 3px;
+  --connector-drop: 20px;
+}
+
+/* Only scrolls on very small screens; on desktop the tree fits without it. */
+.family-tree__scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 4px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.family-tree__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* SVG overlay that draws every connector line, measured from node positions. */
+.family-tree__connectors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.family-tree__connectors line {
+  stroke: var(--connector-color);
+  stroke-width: var(--connector-width);
+  stroke-linecap: butt;
+}
+
+/* Nodes sit above the connector overlay so lines meet card edges cleanly. */
+.family-tree__grandparents,
+.family-tree__branches {
+  position: relative;
+  z-index: 1;
+}
+
+.family-tree__grandparents {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Horizontal spacer keeping the grandparents apart for their connector. */
+.family-tree__couple-gap {
+  width: 24px;
+  margin: 0 4px;
+}
+
+/* Vertical spacer reserving room for the trunk between the generations. */
+.family-tree__trunk {
+  width: var(--connector-width);
+  height: var(--connector-drop);
+}
+
+.family-tree__branches {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+.family-tree__branch-slot {
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+  padding-top: var(--connector-drop);
+}
+
+.family-tree__hint {
+  display: none;
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-text-soft, #8a6a52);
+  text-align: center;
+}
+
+/* Show the swipe hint only when the tree needs horizontal scrolling. */
+@media (max-width: 720px) {
+  .family-tree__hint {
+    display: block;
+  }
+}

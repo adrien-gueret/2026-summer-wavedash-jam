@@ -7,6 +7,29 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Shared design tokens (desktop-first palette). */
+  --color-bg-gradient: radial-gradient(
+    circle at 50% 20%,
+    rgba(251, 241, 222, 0.7),
+    rgba(236, 214, 178, 0.7) 80%
+  );
+  --color-surface: #fffaf0;
+  --color-surface-alt: #fdf1dc;
+  --color-primary: #b4532f;
+  --color-primary-dark: #7a2e12;
+  --color-accent: #e8623c;
+  --color-text: #4a2f1b;
+  --color-text-soft: #6b4a30;
+
+  --radius-lg: 24px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-panel: 0 18px 50px rgba(74, 47, 27, 0.18);
+  --shadow-panel-hover: 0 24px 64px rgba(74, 47, 27, 0.26);
+
+  /* The game targets desktop; this is the comfortable content width. */
+  --content-max-width: 1100px;
 }
 
 body {
@@ -16,10 +39,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: stretch;
+  color: var(--color-text);
+
+  background-color: #ecd6b2;
+  background-image: var(--color-bg-gradient), url("./images/dirt.webp");
+  background-attachment: fixed;
 }
 
 #root {
   display: flex;
+  flex: 1;
+  width: 100%;
 }
 
 * {

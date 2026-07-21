@@ -1,0 +1,40 @@
+.family-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  width: 90px;
+  height: 96px;
+  padding: 10px 8px;
+  border: 2px solid var(--color-primary, #b4532f);
+  border-radius: var(--radius-md, 14px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #4a2f1b);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.family-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(74, 47, 27, 0.2);
+}
+
+.family-node:focus-visible {
+  outline: 3px solid var(--color-primary-dark, #7a2e12);
+  outline-offset: 3px;
+}
+
+.family-node--selected {
+  border-color: #2f6fb4;
+  box-shadow: 0 0 0 4px rgba(47, 111, 180, 0.35);
+}
+
+.family-node__name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}

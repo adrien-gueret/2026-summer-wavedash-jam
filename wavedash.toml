@@ -1,4 +1,4 @@
-game_id = "todo_wavedash_game_id"
+game_id = "table_for_trouble"
 upload_dir = "dist"
 
 entrypoint = "index.html"

@@ -1,0 +1,39 @@
+.portrait {
+  display: inline-block;
+  flex: none;
+  border: 2px solid #4a2f1b;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  /* The sheet is three square frames wide (384x128); show one frame. */
+  background-size: 300% 100%;
+  border-radius: 50%;
+}
+
+.portrait--medium {
+  width: 54px;
+  height: 54px;
+}
+
+.portrait--large {
+  width: 104px;
+  height: 104px;
+  border-width: 3px;
+}
+
+.portrait--small {
+  width: 34px;
+  height: 34px;
+}
+
+/* Pick a frame from the spritesheet. */
+.portrait--neutral {
+  background-position: 0% 50%;
+}
+
+.portrait--happy {
+  background-position: 50% 50%;
+}
+
+.portrait--sad {
+  background-position: 100% 50%;
+}

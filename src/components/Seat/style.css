@@ -1,0 +1,143 @@
+.seat-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.seat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #fffaf0;
+  box-shadow: 0 4px 12px rgba(74, 47, 27, 0.18);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.seat:hover {
+  transform: scale(1.05);
+}
+
+.seat:focus-visible {
+  outline: 3px solid #7a2e12;
+  outline-offset: 2px;
+}
+
+.seat--inspected {
+  border-color: #2f6fb4;
+  box-shadow: 0 0 0 4px rgba(47, 111, 180, 0.35);
+  transform: scale(1.08);
+}
+
+.seat--grabbed {
+  border-color: #7a2e12;
+  border-style: solid;
+  box-shadow: 0 0 0 4px rgba(122, 46, 18, 0.45);
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.seat--dragging {
+  cursor: grabbing;
+  opacity: 0.35;
+}
+
+.seat--drop-target {
+  border-color: #2f7a3f;
+  border-style: solid;
+  box-shadow: 0 0 0 5px rgba(47, 122, 63, 0.45);
+  transform: scale(1.12);
+}
+
+.seat--highlighted {
+  border-color: #2f7a3f;
+  border-style: dashed;
+}
+
+/* A guest related to the inspected character's preferences: a green glow for
+   someone they like sitting near, a red glow for someone they would avoid. */
+.seat--wanted,
+.seat--unwanted {
+  border-color: rgb(var(--relation-rgb));
+  box-shadow: 0 0 0 3px rgba(var(--relation-rgb), 0.5);
+  animation: seat-relation-pulse 1.7s ease-in-out infinite;
+}
+
+.seat--wanted {
+  --relation-rgb: 47, 122, 63;
+}
+
+.seat--unwanted {
+  --relation-rgb: 192, 57, 43;
+}
+
+@keyframes seat-relation-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px rgba(var(--relation-rgb), 0.5),
+      0 4px 14px rgba(var(--relation-rgb), 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(var(--relation-rgb), 0.22),
+      0 8px 20px rgba(var(--relation-rgb), 0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seat--wanted,
+  .seat--unwanted {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(var(--relation-rgb), 0.5);
+  }
+}
+
+.seat--happy {
+  background: #e3f5e4;
+}
+
+.seat--sad {
+  background: #f9e4e4;
+}
+
+.seat--empty {
+  background: rgba(255, 250, 240, 0.8);
+  border: 2px dashed #c9a77c;
+  box-shadow: none;
+  cursor: default;
+}
+
+.seat--empty:hover {
+  transform: none;
+}
+
+.seat--empty.seat--drop-target {
+  background: rgba(47, 122, 63, 0.12);
+}
+
+.seat__placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px dashed #c9a77c;
+}
+
+.seat__name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4a2f1b;
+  white-space: nowrap;
+}
+
+.seat__name--empty {
+  color: #9c7b53;
+  font-weight: 600;
+}

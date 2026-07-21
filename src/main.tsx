@@ -27,18 +27,21 @@ if (!document.startViewTransition) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <WavedashProvider
-      preload={{
-        audio: {
+      preload={
+        {
+          /*audio: {
           music: [],
         },
         images: [],
-      }}
+        },*/
+        }
+      }
       defaultMusicVolume={0.9}
       defaultSoundsVolume={1}
     >
       <StateProvider
         saveOptions={{
-          fileName: "TODO-GAME-NAME-SAVE",
+          fileName: "TABLE-FOR-TROUBLE-SAVE",
           autoSave: true,
           autoLoad: true,
         }}

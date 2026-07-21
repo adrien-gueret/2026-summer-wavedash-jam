@@ -1,0 +1,60 @@
+.family-branch {
+  --connector-color: #7a2e12;
+  --connector-width: 3px;
+  --child-drop: 18px;
+  --child-stem: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.family-branch__couple {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Horizontal spacer between two partners; the line itself is drawn in SVG. */
+.family-branch__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  padding: 0 4px;
+}
+
+.family-branch__link--former {
+  width: 60px;
+}
+
+/* A compact badge sitting on the dashed line for former partners. */
+.family-branch__link-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--color-surface-alt, #fdf1dc);
+  border: 1.5px solid var(--connector-color);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--connector-color);
+  line-height: 1.2;
+}
+
+.family-branch__children {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: calc(var(--child-stem) + var(--child-drop)) 0 0;
+  list-style: none;
+}
+
+.family-branch__child {
+  display: flex;
+  justify-content: center;
+  padding: 0 8px;
+}

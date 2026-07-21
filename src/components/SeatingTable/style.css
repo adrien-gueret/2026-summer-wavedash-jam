@@ -1,0 +1,39 @@
+.seating-table {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+.seating-table__surface {
+  position: absolute;
+  top: 22%;
+  left: 12%;
+  width: 76%;
+  height: 56%;
+  border-style: solid;
+  border-width: 48px;
+  border-image: url("./images/table.png") 70 fill / 48px stretch;
+}
+
+.seating-table__surface::after {
+  content: "";
+  position: absolute;
+  inset: -48px;
+  background-image: url("./images/tablecloth.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .seating-table {
+    max-width: 340px;
+  }
+
+  .seat__name {
+    font-size: 0.72rem;
+  }
+}

@@ -2,13 +2,19 @@ import { createStateContext, defineState } from "wavedash-react";
 
 import type { PersistentState, UIState } from "@/types";
 
-import * as gameActions from "./actions";
+import { submitLevelResult } from "./actions";
 
-// TODO: define UiState and PersistentState
+const INITIAL_PERSISTENT_STATE: PersistentState = {
+  unlockedLevelIds: ["1"],
+  completedLevelIds: [],
+  bestScoresByLevelId: {},
+};
 
 const persistent = defineState({
-  initialState: {} as PersistentState,
-  actions: {},
+  initialState: INITIAL_PERSISTENT_STATE,
+  actions: {
+    submitLevelResult,
+  },
 });
 
 const ui = defineState({
