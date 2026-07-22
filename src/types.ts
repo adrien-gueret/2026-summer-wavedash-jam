@@ -103,10 +103,8 @@ export type PreferenceDefinition = {
 
 export type LevelDefinition = {
   id: string;
-  number: number;
   title: string;
   description: string;
-  unlockedByDefault: boolean;
   tables: TableDefinition[];
   characterIds: CharacterId[];
   initialSeating: SeatingPlan;
@@ -152,6 +150,7 @@ export type PersistentState = {
   unlockedLevelIds: string[];
   completedLevelIds: string[];
   bestScoresByLevelId: Record<string, number>;
+  worstScoresByLevelId: Record<string, number>;
 };
 
 export type UIState = Record<string, never>;

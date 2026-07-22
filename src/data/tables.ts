@@ -1,11 +1,6 @@
 import type { TableDefinition } from "@/types";
 
 /**
- * Level 1 uses six seats arranged around an oval table. Adjacency and opposite
- * relationships are declared explicitly and are the single source of truth.
- * They must not be derived from seat indices or visual coordinates. The two
- * seats at the ends of the oval's long axis (seat-2 on the right, seat-5 on the
- * left) are the "head of table" end seats, declared explicitly in endSeatIds.
  *
  *           Seat 0      Seat 1
  *
@@ -13,8 +8,8 @@ import type { TableDefinition } from "@/types";
  *
  *           Seat 4      Seat 3
  */
-export const ovalTableForSix: TableDefinition = {
-  id: "oval-table-6",
+export const tableForSix: TableDefinition = {
+  id: "table-6",
   seats: [
     { id: "seat-0", label: "Seat 0", position: { x: 35, y: 22 } },
     { id: "seat-1", label: "Seat 1", position: { x: 65, y: 22 } },

@@ -58,10 +58,8 @@ function makeLevel(
   }
   return {
     id: "test",
-    number: 99,
     title: "Test Level",
     description: "Synthetic level for unit tests.",
-    unlockedByDefault: false,
     tables,
     characterIds,
     initialSeating,

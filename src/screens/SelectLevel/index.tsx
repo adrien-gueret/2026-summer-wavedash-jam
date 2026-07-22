@@ -1,16 +1,24 @@
 import { useNavigate } from "react-router-dom";
 
+import Tooltip from "@/components/Tooltip";
 import { getPlayRoute, ROUTES } from "@/constants";
 import { LEVEL_LIST } from "@/data/levels";
-import { computePerfectScore } from "@/game/scoring";
+import { computePerfectScore, computeWorstScore } from "@/game/scoring";
 import { usePersistentSelector } from "@/state";
 import {
   selectBestScore,
   selectIsLevelCompleted,
   selectIsLevelUnlocked,
+  selectWorstScore,
 } from "@/state/selectors";
 
 import "./style.css";
+
+// Sprite sheet at images/icons.png (800×200) holds four 200×200 tiles in the
+// order: success | perfect | worst | locked.
+const ICON_STYLE = {
+  backgroundImage: `url(${import.meta.env.BASE_URL}images/icons.png)`,
+};
 
 export default function SelectLevel() {
   const navigate = useNavigate();
@@ -25,7 +33,7 @@ export default function SelectLevel() {
         >
           Back
         </button>
-        <h1 className="select-level__title">Select a Level</h1>
+        <h1 className="select-level__title">Select your dinner</h1>
       </header>
 
       <ul className="select-level__grid">
@@ -52,6 +60,9 @@ function LevelCard({ entryId }: { entryId: string }) {
   const bestScore = usePersistentSelector((state) =>
     selectBestScore(state, entry.id),
   );
+  const worstScore = usePersistentSelector((state) =>
+    selectWorstScore(state, entry.id),
+  );
 
   const isPlayable = entry.isPlayable && isUnlocked;
 
@@ -61,11 +72,13 @@ function LevelCard({ entryId }: { entryId: string }) {
         className="level-card level-card--locked"
         aria-label={`Level ${entry.number}. Locked.`}
       >
-        <span className="level-card__number">Level {entry.number}</span>
+        <span className="level-card__number">Dinner {entry.number}</span>
         <span className="level-card__status">
-          <span className="level-card__lock-icon" aria-hidden="true">
-            🔒
-          </span>
+          <span
+            className="level-card__badge level-card__badge--locked"
+            style={ICON_STYLE}
+            aria-hidden="true"
+          />
           Locked
         </span>
       </div>
@@ -75,6 +88,28 @@ function LevelCard({ entryId }: { entryId: string }) {
   const perfectScore = entry.definition
     ? computePerfectScore(entry.definition)
     : undefined;
+  const worstPossible = entry.definition
+    ? computeWorstScore(entry.definition)
+    : undefined;
+
+  const perfectAchieved =
+    bestScore !== undefined &&
+    perfectScore !== undefined &&
+    bestScore >= perfectScore;
+  const disasterAchieved =
+    worstScore !== undefined &&
+    worstPossible !== undefined &&
+    worstScore <= worstPossible;
+
+  const successLabel = isCompleted
+    ? "This dinner was a success!"
+    : "This dinner hasn't been a success yet";
+  const perfectLabel = perfectAchieved
+    ? "We had a perfect dinner!"
+    : "Waiting for the perfect dinner";
+  const disasterLabel = disasterAchieved
+    ? "This dinner was a total disaster!"
+    : "What if we have the worst dinner ever?";
 
   return (
     <button
@@ -82,19 +117,41 @@ function LevelCard({ entryId }: { entryId: string }) {
       className="level-card level-card--playable"
       onClick={() => navigate(getPlayRoute(entry.id))}
     >
-      <span className="level-card__number">Level {entry.number}</span>
+      <span className="level-card__number">Dinner {entry.number}</span>
       <span className="level-card__name">{entry.title}</span>
-      {bestScore !== undefined && (
-        <span className="level-card__best">
-          Best: {bestScore}
-          {perfectScore !== undefined ? ` / ${perfectScore}` : ""}
-        </span>
-      )}
-      {isCompleted && (
-        <span className="level-card__completed">
-          <span aria-hidden="true">✓</span> Completed
-        </span>
-      )}
+
+      <div className="level-card__badges">
+        <Tooltip label={successLabel}>
+          <span
+            className={`level-card__badge level-card__badge--success${
+              isCompleted ? " level-card__badge--earned" : ""
+            }`}
+            style={ICON_STYLE}
+            role="img"
+            aria-label={successLabel}
+          />
+        </Tooltip>
+        <Tooltip label={perfectLabel}>
+          <span
+            className={`level-card__badge level-card__badge--perfect${
+              perfectAchieved ? " level-card__badge--earned" : ""
+            }`}
+            style={ICON_STYLE}
+            role="img"
+            aria-label={perfectLabel}
+          />
+        </Tooltip>
+        <Tooltip label={disasterLabel}>
+          <span
+            className={`level-card__badge level-card__badge--worst${
+              disasterAchieved ? " level-card__badge--earned" : ""
+            }`}
+            style={ICON_STYLE}
+            role="img"
+            aria-label={disasterLabel}
+          />
+        </Tooltip>
+      </div>
     </button>
   );
 }

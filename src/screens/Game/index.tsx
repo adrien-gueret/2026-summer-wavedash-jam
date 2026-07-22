@@ -19,7 +19,7 @@ import ResultModal from "@/components/ResultModal";
 import SeatingTable from "@/components/SeatingTable";
 import { ROUTES, getPlayRoute } from "@/constants";
 import { CHARACTERS } from "@/data/characters";
-import { getLevel, getNextLevel } from "@/data/levels";
+import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
 import {
   getActivePreferencesForLevel,
   preferenceTargetIds,
@@ -262,6 +262,7 @@ function PlayableLevel({ levelId }: { levelId: string }) {
     <main className="game">
       <GameHeader
         level={level}
+        number={getLevelNumber(level.id)}
         score={scoreResult.total}
         allSeated={allSeated}
         showScore={hasSubmitted}

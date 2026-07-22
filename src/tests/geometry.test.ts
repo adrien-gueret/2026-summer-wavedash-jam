@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { ovalTableForSix } from "@/data/tables";
+import { tableForSix } from "@/data/tables";
 import { areSeatsAdjacent, areSeatsOpposite } from "@/game/geometry";
 
-const table = ovalTableForSix;
+const table = tableForSix;
 
 describe("seat adjacency", () => {
   it("recognizes perimeter neighbours", () => {

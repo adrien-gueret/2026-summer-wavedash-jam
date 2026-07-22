@@ -11,7 +11,13 @@ export default function MainMenu() {
     <main className="main-menu">
       <div className="main-menu__panel">
         <div className="main-menu__heading">
-          <h1 className="main-menu__title">{GAME_TITLE}</h1>
+          <h1 className="main-menu__title">
+            <img
+              className="main-menu__logo"
+              src={`${import.meta.env.BASE_URL}images/logo.png`}
+              alt={GAME_TITLE}
+            />
+          </h1>
           <p className="main-menu__tagline">{GAME_TAGLINE}</p>
         </div>
 
@@ -29,7 +35,7 @@ export default function MainMenu() {
             className="main-menu__button"
             onClick={() => navigate(ROUTES.family)}
           >
-            About the Family
+            Know the Family
           </button>
         </nav>
       </div>

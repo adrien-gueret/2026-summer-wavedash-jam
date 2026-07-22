@@ -8,6 +8,7 @@ const INITIAL_PERSISTENT_STATE: PersistentState = {
   unlockedLevelIds: ["1"],
   completedLevelIds: [],
   bestScoresByLevelId: {},
+  worstScoresByLevelId: {},
 };
 
 const persistent = defineState({

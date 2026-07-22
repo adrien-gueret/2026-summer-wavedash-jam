@@ -27,15 +27,15 @@ if (!document.startViewTransition) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <WavedashProvider
-      preload={
-        {
-          /*audio: {
-          music: [],
+      preload={{
+        audio: {
+          menu_music: ["./audio/menu_music.ogg", "./audio/menu_music.mp3"],
+          game_music: ["./audio/game_music.ogg", "./audio/game_music.mp3"],
         },
+        /*,
         images: [],
         },*/
-        }
-      }
+      }}
       defaultMusicVolume={0.9}
       defaultSoundsVolume={1}
     >

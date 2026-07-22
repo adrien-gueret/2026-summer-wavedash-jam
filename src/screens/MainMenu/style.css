@@ -36,6 +36,13 @@
   text-align: center;
 }
 
+.main-menu__logo {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+}
+
 .main-menu__tagline {
   margin: 0;
   font-size: 1.05rem;

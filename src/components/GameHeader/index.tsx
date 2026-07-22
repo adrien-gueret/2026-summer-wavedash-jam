@@ -4,6 +4,7 @@ import "./style.css";
 
 type GameHeaderProps = {
   level: LevelDefinition;
+  number: number;
   score: number;
   allSeated: boolean;
   showScore: boolean;
@@ -11,6 +12,7 @@ type GameHeaderProps = {
 
 export default function GameHeader({
   level,
+  number,
   score,
   allSeated,
   showScore,
@@ -18,7 +20,7 @@ export default function GameHeader({
   return (
     <header className="game-header">
       <div className="game-header__info">
-        <p className="game-header__level">Level {level.number}</p>
+        <p className="game-header__level">Level {number}</p>
         <h1 className="game-header__title">{level.title}</h1>
         <p className="game-header__instruction">{level.description}</p>
       </div>
