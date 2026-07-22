@@ -25,6 +25,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eaddc4;
 }
 
 .preference-list__identity {
@@ -64,9 +66,10 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #eaddc4;
   border-left: 4px solid #c9b18a;
   background: #fdf6e8;
 }
@@ -74,6 +77,8 @@
 .preference-item__icon {
   font-weight: 900;
   font-size: 1.1rem;
+  width: 1.4rem;
+  text-align: center;
 }
 
 .preference-item__text {
@@ -96,6 +101,7 @@
 
 .preference-item__points {
   font-weight: 800;
+  font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -113,11 +119,18 @@
 .preference-item--fulfilled .preference-item__points {
   color: #2f7a3f;
 }
+.preference-item--fulfilled .preference-item__status {
+  color: #2f7a3f;
+}
 
 .preference-item--avoided {
   border-left-color: #2f7a3f;
+  background: #eef8ec;
 }
 .preference-item--avoided .preference-item__icon {
+  color: #2f7a3f;
+}
+.preference-item--avoided .preference-item__status {
   color: #2f7a3f;
 }
 
@@ -127,6 +140,9 @@
 }
 .preference-item--violated .preference-item__icon,
 .preference-item--violated .preference-item__points {
+  color: #b4402f;
+}
+.preference-item--violated .preference-item__status {
   color: #b4402f;
 }
 

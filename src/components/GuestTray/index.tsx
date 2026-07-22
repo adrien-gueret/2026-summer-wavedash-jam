@@ -117,7 +117,32 @@ export default function GuestTray({
       </header>
 
       {guests.length === 0 ? (
-        <p className="guest-tray__empty">Everyone is at the table.</p>
+        <p className="guest-tray__empty">
+          <svg
+            className="guest-tray__empty-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="9" cy="8" r="3" fill="currentColor" />
+            <circle cx="16.5" cy="9" r="2.4" fill="currentColor" />
+            <path
+              d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M14.5 14.2c2.4.2 4.2 2.1 4.2 4.8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+          Everyone is at the table.
+        </p>
       ) : (
         <ul className="guest-tray__list">
           {guests.map((character) => (

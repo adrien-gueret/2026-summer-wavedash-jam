@@ -22,6 +22,7 @@ type ResultModalProps = {
 
 function resultMessage(
   score: number,
+  worstScore: number,
   targetScore: number,
   perfectScore: number,
 ): string {
@@ -30,6 +31,9 @@ function resultMessage(
   }
   if (score >= targetScore) {
     return "Dinner saved!";
+  }
+  if (score <= worstScore) {
+    return "Every guest is furious — the worst dinner imaginable. Impressively awful!";
   }
   return "Dinner disaster.";
 }
@@ -98,7 +102,43 @@ function fireConfetti(intense: boolean) {
   requestAnimationFrame(frame);
 }
 
+const DISASTER_COLORS = ["#1a1a1a", "#000000", "#2c2c2c"];
+
+/**
+ * Rains dark debris down from the top of the screen — the tongue-in-cheek
+ * "celebration" reserved for achieving the worst dinner possible.
+ */
+function fireDisaster() {
+  const base = {
+    zIndex: 200,
+    disableForReducedMotion: true,
+    colors: DISASTER_COLORS,
+    gravity: 1.1,
+    startVelocity: 12,
+    ticks: 220,
+    angle: 270,
+  } as const;
+
+  const end = Date.now() + 900;
+  const frame = () => {
+    confetti({
+      ...base,
+      particleCount: 6,
+      spread: 65,
+      origin: { x: Math.random(), y: 0 },
+    });
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  };
+  requestAnimationFrame(frame);
+}
+
 const FILL_ANIMATION_MS = 1400;
+
+const ICON_STYLE = {
+  backgroundImage: `url(${import.meta.env.BASE_URL}images/icons.png)`,
+};
 
 export default function ResultModal({
   level,
@@ -115,22 +155,35 @@ export default function ResultModal({
   const targetScore = computeTargetScore(level);
   const hasReachedTarget = total >= targetScore;
   const isPerfect = total >= perfectScore;
+  const isWorst = total <= worstScore;
+
+  const resultIcon = isPerfect
+    ? "perfect"
+    : hasReachedTarget
+      ? "success"
+      : isWorst
+        ? "worst"
+        : null;
 
   const fillPercent = toPercent(total, worstScore, perfectScore);
   const targetPercent = toPercent(targetScore, worstScore, perfectScore);
   const targetCrossProgress =
     total > worstScore ? (targetScore - worstScore) / (total - worstScore) : 0;
   const [progress, setProgress] = useState(() =>
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? 1 : 0,
+    isWorst || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      ? 1
+      : 0,
   );
 
   const animatedFill = progress * fillPercent;
   const displayedScore = Math.round(
     worstScore + progress * (total - worstScore),
   );
+  const animationDone = progress >= 1;
 
   const firedTargetRef = useRef(false);
   const firedPerfectRef = useRef(false);
+  const firedWorstRef = useRef(false);
 
   useEffect(() => {
     dialogRef.current?.focus();
@@ -140,7 +193,11 @@ export default function ResultModal({
     const prefersReducedMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || isWorst) {
+      if (isWorst && !prefersReducedMotion && !firedWorstRef.current) {
+        firedWorstRef.current = true;
+        fireDisaster();
+      }
       return;
     }
 
@@ -172,7 +229,7 @@ export default function ResultModal({
     };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
-  }, [hasReachedTarget, isPerfect, targetCrossProgress]);
+  }, [hasReachedTarget, isPerfect, isWorst, targetCrossProgress]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -196,20 +253,12 @@ export default function ResultModal({
     >
       <div
         ref={dialogRef}
-        className="result-modal"
+        className={`result-modal${isWorst ? " result-modal--disaster" : ""}`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="result-modal-title"
+        aria-label="Seating plan result"
         tabIndex={-1}
       >
-        <h2 id="result-modal-title" className="result-modal__title">
-          Seating Plan Submitted
-        </h2>
-
-        <p className="result-modal__message" role="status">
-          {resultMessage(total, targetScore, perfectScore)}
-        </p>
-
         <div className="result-modal__final">
           <span className="result-modal__final-label">Final score</span>
           <span className="result-modal__final-value">{displayedScore}</span>
@@ -249,50 +298,64 @@ export default function ResultModal({
           </div>
         </div>
 
-        <p
-          className={`result-modal__target-state${
-            hasReachedTarget ? " result-modal__target-state--reached" : ""
+        <div
+          className={`result-modal__reveal${
+            animationDone ? " result-modal__reveal--open" : ""
           }`}
         >
-          {hasReachedTarget ? (
-            <>
-              <span aria-hidden="true">✓</span> Target reached
-            </>
-          ) : (
-            <>
-              <span aria-hidden="true">✕</span> Target not reached yet
-            </>
-          )}
-        </p>
+          <div className="result-modal__reveal-inner">
+            <div className="result-modal__outcome" aria-hidden="true">
+              {animationDone && resultIcon && (
+                <span
+                  className={`result-modal__icon result-modal__icon--${resultIcon}`}
+                  style={ICON_STYLE}
+                />
+              )}
+            </div>
 
-        <div className="result-modal__actions">
-          {hasReachedTarget && (
-            <button
-              type="button"
-              className="result-modal__button result-modal__button--primary"
-              onClick={onNextLevel}
-            >
-              {isLastLevel ? "Next" : "Next Level"}
-            </button>
-          )}
-          {!isPerfect && (
-            <button
-              type="button"
-              className={`result-modal__button${
-                hasReachedTarget ? "" : " result-modal__button--primary"
+            <p
+              className={`result-modal__message${
+                animationDone ? " result-modal__message--visible" : ""
               }`}
-              onClick={onContinue}
+              role="status"
             >
-              Improve Seating
-            </button>
-          )}
-          <button
-            type="button"
-            className="result-modal__button"
-            onClick={onBackToLevels}
-          >
-            Back to Level Select
-          </button>
+              {resultMessage(total, worstScore, targetScore, perfectScore)}
+            </p>
+
+            <div
+              className={`result-modal__actions${
+                animationDone ? " result-modal__actions--revealed" : ""
+              }`}
+            >
+              {hasReachedTarget && (
+                <button
+                  type="button"
+                  className="result-modal__button result-modal__button--primary"
+                  onClick={onNextLevel}
+                >
+                  {isLastLevel ? "Next" : "Next Level"}
+                </button>
+              )}
+              {!isPerfect && (
+                <button
+                  type="button"
+                  className={`result-modal__button${
+                    hasReachedTarget ? "" : " result-modal__button--primary"
+                  }`}
+                  onClick={onContinue}
+                >
+                  Improve Seating
+                </button>
+              )}
+              <button
+                type="button"
+                className="result-modal__button"
+                onClick={onBackToLevels}
+              >
+                Back to Level Select
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

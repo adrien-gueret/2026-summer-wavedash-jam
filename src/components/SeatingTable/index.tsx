@@ -7,7 +7,6 @@ import type {
   CharacterId,
   SeatId,
   SeatingPlan,
-  SeatRelation,
   TableDefinition,
 } from "@/types";
 
@@ -18,7 +17,6 @@ type SeatingTableProps = {
   seatingPlan: SeatingPlan;
   inspectedCharacterId: CharacterId | null;
   grabbedCharacterId: CharacterId | null;
-  seatRelations: ReadonlyMap<SeatId, SeatRelation>;
   expressionFor: (characterId: CharacterId) => CharacterExpression;
   onInspectCharacter: (characterId: CharacterId) => void;
   onActivateSeat: (seatId: SeatId) => void;
@@ -32,7 +30,6 @@ export default function SeatingTable({
   seatingPlan,
   inspectedCharacterId,
   grabbedCharacterId,
-  seatRelations,
   expressionFor,
   onInspectCharacter,
   onActivateSeat,
@@ -120,7 +117,6 @@ export default function SeatingTable({
             isGrabbed={
               character !== null && grabbedCharacterId === character.id
             }
-            relation={seatRelations.get(seat.id) ?? null}
             onInspect={onInspectCharacter}
             onActivate={onActivateSeat}
           />

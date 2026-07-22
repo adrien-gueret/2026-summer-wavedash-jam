@@ -70,7 +70,7 @@ function LevelCard({ entryId }: { entryId: string }) {
     return (
       <div
         className="level-card level-card--locked"
-        aria-label={`Level ${entry.number}. Locked.`}
+        aria-label={`Dinner ${entry.number}. Locked.`}
       >
         <span className="level-card__number">Dinner {entry.number}</span>
         <span className="level-card__status">

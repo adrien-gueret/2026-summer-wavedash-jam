@@ -10,7 +10,6 @@ import type {
   CharacterId,
   SeatDefinition,
   SeatId,
-  SeatRelation,
 } from "@/types";
 
 import "./style.css";
@@ -21,7 +20,6 @@ type SeatProps = {
   expression: CharacterExpression;
   isInspected: boolean;
   isGrabbed: boolean;
-  relation: SeatRelation | null;
   onInspect: (characterId: CharacterId) => void;
   onActivate: (seatId: SeatId) => void;
 };
@@ -32,7 +30,6 @@ export default function Seat({
   expression,
   isInspected,
   isGrabbed,
-  relation,
   onInspect,
   onActivate,
 }: SeatProps) {
@@ -68,8 +65,6 @@ export default function Seat({
     character && expression === "sad" ? "seat--sad" : "",
     isInspected ? "seat--inspected" : "",
     isGrabbed ? "seat--grabbed" : "",
-    !isInspected && relation === "wanted" ? "seat--wanted" : "",
-    !isInspected && relation === "unwanted" ? "seat--unwanted" : "",
     isDragging ? "seat--dragging" : "",
     isOver ? "seat--drop-target" : "",
   ]

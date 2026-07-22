@@ -2,9 +2,10 @@
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
+  padding: 6vh 16px 16px;
+  overflow-y: auto;
   background: rgba(38, 24, 12, 0.55);
   z-index: 100;
   animation: result-fade-in 0.2s ease;
@@ -30,11 +31,10 @@
   outline-offset: 3px;
 }
 
-.result-modal__title {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #7a2e12;
-  text-align: center;
+.result-modal--disaster {
+  animation:
+    result-pop-in 0.22s ease,
+    result-shake 0.5s ease 0.18s;
 }
 
 .result-modal__message {
@@ -43,6 +43,33 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: #4a2f1b;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.result-modal__message--visible {
+  opacity: 1;
+}
+
+.result-modal__icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  animation: result-icon-pop 0.3s ease;
+}
+
+.result-modal__icon--success {
+  background-position: 0% 0;
+}
+
+.result-modal__icon--perfect {
+  background-position: 33.3333% 0;
+}
+
+.result-modal__icon--worst {
+  background-position: 66.6667% 0;
 }
 
 .result-modal__final {
@@ -145,15 +172,27 @@
   color: #8a6a48;
 }
 
-.result-modal__target-state {
-  margin: 0;
-  text-align: center;
-  font-weight: 700;
-  color: #b4402f;
+.result-modal__outcome {
+  display: flex;
+  justify-content: center;
 }
 
-.result-modal__target-state--reached {
-  color: #2f7a3f;
+.result-modal__reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+
+.result-modal__reveal--open {
+  grid-template-rows: 1fr;
+}
+
+.result-modal__reveal-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .result-modal__actions {
@@ -172,9 +211,26 @@
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
+  opacity: 0;
   transition:
     filter 0.15s ease,
     transform 0.15s ease;
+}
+
+.result-modal__actions--revealed .result-modal__button {
+  animation: result-button-in 0.32s ease both;
+}
+
+.result-modal__actions--revealed .result-modal__button:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.result-modal__actions--revealed .result-modal__button:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.result-modal__actions--revealed .result-modal__button:nth-child(3) {
+  animation-delay: 0.24s;
 }
 
 .result-modal__button--primary {
@@ -212,9 +268,66 @@
   }
 }
 
+@keyframes result-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(7px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes result-icon-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes result-button-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .result-modal__backdrop,
-  .result-modal {
+  .result-modal,
+  .result-modal--disaster,
+  .result-modal__icon {
     animation: none;
+  }
+
+  .result-modal__message {
+    transition: none;
+  }
+
+  .result-modal__reveal {
+    transition: none;
+  }
+
+  .result-modal__button,
+  .result-modal__actions--revealed .result-modal__button {
+    animation: none;
+    opacity: 1;
   }
 }

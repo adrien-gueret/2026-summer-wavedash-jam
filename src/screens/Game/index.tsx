@@ -20,17 +20,11 @@ import SeatingTable from "@/components/SeatingTable";
 import { ROUTES, getPlayRoute } from "@/constants";
 import { CHARACTERS } from "@/data/characters";
 import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
-import {
-  getActivePreferencesForLevel,
-  preferenceTargetIds,
-} from "@/data/preferences";
-import { collectEndSeatIds } from "@/game/geometry";
 import { computeTargetScore, expressionForScore } from "@/game/scoring";
-import { getSeatByCharacter } from "@/game/seating";
 import { useLevelGame } from "@/hooks/useLevelGame";
 import { usePersistentActions, usePersistentSelector } from "@/state";
 import { selectIsLevelUnlocked } from "@/state/selectors";
-import type { CharacterId, DropTarget, SeatId, SeatRelation } from "@/types";
+import type { CharacterId, DropTarget, SeatId } from "@/types";
 
 import "./style.css";
 
@@ -46,14 +40,14 @@ export default function Game() {
   if (!level || !isUnlocked) {
     return (
       <main className="game game--invalid">
-        <h1>Level unavailable</h1>
-        <p>This level is locked or does not exist.</p>
+        <h1>Dinner unavailable</h1>
+        <p>You are not invited to this dinner.</p>
         <button
           type="button"
           className="game__button"
           onClick={() => navigate(ROUTES.levels)}
         >
-          Back to Level Select
+          Back to Dinner Select
         </button>
       </main>
     );
@@ -171,52 +165,6 @@ function PlayableLevel({ levelId }: { levelId: string }) {
     [expressionByCharacter],
   );
 
-  const seatRelations = useMemo(() => {
-    const relations = new Map<SeatId, SeatRelation>();
-    if (!inspectedCharacterId) {
-      return relations;
-    }
-
-    const seatByCharacter = getSeatByCharacter(seatingPlan);
-
-    const ownedPreferences = getActivePreferencesForLevel(
-      level.characterIds,
-    ).filter((preference) => preference.ownerId === inspectedCharacterId);
-
-    // A guest to avoid always shows as "unwanted", even if another preference
-    // would also mark them as wanted.
-    const mark = (seatId: SeatId | undefined, points: number) => {
-      if (!seatId) {
-        return;
-      }
-      const relation: SeatRelation = points < 0 ? "unwanted" : "wanted";
-      if (relations.get(seatId) === "unwanted") {
-        return;
-      }
-      relations.set(seatId, relation);
-    };
-
-    for (const preference of ownedPreferences) {
-      // End-seat (and other no-target) conditions highlight the table ends
-      // themselves rather than another guest.
-      if (preference.condition === "end-seat") {
-        for (const seatId of collectEndSeatIds(level.tables)) {
-          mark(seatId, preference.points);
-        }
-        continue;
-      }
-
-      for (const targetId of preferenceTargetIds(preference)) {
-        if (targetId === inspectedCharacterId) {
-          continue;
-        }
-        mark(seatByCharacter[targetId], preference.points);
-      }
-    }
-
-    return relations;
-  }, [inspectedCharacterId, seatingPlan, level]);
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || isResultOpen) {
@@ -268,15 +216,15 @@ function PlayableLevel({ levelId }: { levelId: string }) {
         showScore={hasSubmitted}
       />
 
-      <div className="game__layout">
-        <section className="game__table-area" aria-label="Dining table">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={pointerWithin}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
-          >
+      <DndContext
+        sensors={sensors}
+        collisionDetection={pointerWithin}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <div className="game__layout">
+          <section className="game__table-area" aria-label="Dining table">
             <div
               className={`game__tables${
                 level.tables.length > 1 ? " game__tables--multi" : ""
@@ -289,73 +237,73 @@ function PlayableLevel({ levelId }: { levelId: string }) {
                   seatingPlan={seatingPlan}
                   inspectedCharacterId={inspectedCharacterId}
                   grabbedCharacterId={grabbedCharacterId}
-                  seatRelations={seatRelations}
                   expressionFor={expressionFor}
                   onInspectCharacter={handleInspect}
                   onActivateSeat={activateSeat}
                 />
               ))}
             </div>
-            <GuestTray
-              guests={unplacedCharacters}
-              seatedCount={seatedCount}
-              totalCount={level.characterIds.length}
-              inspectedCharacterId={inspectedCharacterId}
-              grabbedCharacterId={grabbedCharacterId}
-              onInspect={handleInspect}
-              onActivate={activateTrayGuest}
-            />
-            <DragOverlay>
-              {activeDrag ? (
-                <div className="game__drag-overlay">
-                  <CharacterPortrait
-                    character={CHARACTERS[activeDrag.characterId]}
-                    size={activeDrag.size}
-                    expression={expressionFor(activeDrag.characterId)}
-                  />
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-          <p className="game__hint">
-            Drag guests from the waiting area onto seats. Drop one onto another
-            to swap them, or back into the waiting area to unseat them. Tap or
-            hover a guest to see what they want.
-          </p>
-        </section>
+            <p className="game__hint">
+              Drag guests from the waiting area onto seats.
+            </p>
+          </section>
 
-        <PreferenceList
-          selectedCharacterId={inspectedCharacterId}
-          scoreResult={scoreResult}
-        />
-      </div>
+          <PreferenceList
+            selectedCharacterId={inspectedCharacterId}
+            scoreResult={scoreResult}
+          />
+        </div>
 
-      <div className="game__controls">
-        <button
-          type="button"
-          className="game__button"
-          onClick={() => navigate(ROUTES.levels)}
-        >
-          Back
-        </button>
-        <button type="button" className="game__button" onClick={resetLevel}>
-          Reset
-        </button>
-        <button
-          type="button"
-          className="game__button game__button--primary"
-          onClick={handleSubmit}
-          disabled={!allSeated}
-          aria-describedby={allSeated ? undefined : "submit-hint"}
-        >
-          Submit Seating Plan
-        </button>
-      </div>
-      {!allSeated && (
-        <p id="submit-hint" className="game__submit-hint">
-          Seat all {level.characterIds.length} guests to submit.
-        </p>
-      )}
+        <div className="game__bottom">
+          <GuestTray
+            guests={unplacedCharacters}
+            seatedCount={seatedCount}
+            totalCount={level.characterIds.length}
+            inspectedCharacterId={inspectedCharacterId}
+            grabbedCharacterId={grabbedCharacterId}
+            onInspect={handleInspect}
+            onActivate={activateTrayGuest}
+          />
+
+          <div className="game__actions">
+            {!allSeated && (
+              <p id="submit-hint" className="game__submit-hint">
+                Seat all {level.characterIds.length} guests to submit.
+              </p>
+            )}
+            <div className="game__controls">
+              <button
+                type="button"
+                className="game__button"
+                onClick={resetLevel}
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                className="game__button game__button--primary"
+                onClick={handleSubmit}
+                disabled={!allSeated}
+                aria-describedby={allSeated ? undefined : "submit-hint"}
+              >
+                Submit Seating Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <DragOverlay>
+          {activeDrag ? (
+            <div className="game__drag-overlay">
+              <CharacterPortrait
+                character={CHARACTERS[activeDrag.characterId]}
+                size={activeDrag.size}
+                expression={expressionFor(activeDrag.characterId)}
+              />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       {isResultOpen && (
         <ResultModal

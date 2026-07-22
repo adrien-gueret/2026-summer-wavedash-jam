@@ -24,6 +24,8 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #c9a77c;
 }
 
 .guest-tray__title {
@@ -41,9 +43,20 @@
 
 .guest-tray__empty {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 8px 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #7a5a38;
+}
+
+.guest-tray__empty-icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: #a8875c;
 }
 
 .guest-tray__list {
