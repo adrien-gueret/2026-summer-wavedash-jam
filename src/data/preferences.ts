@@ -146,9 +146,9 @@ export const PREFERENCES: Record<string, PreferenceDefinition> = {
   "susan-not-next-to-bree-or-karl": {
     id: "susan-not-next-to-bree-or-karl",
     ownerId: "susan",
-    description: "Does not want to sit next to Bree or Karl.",
+    description: "Does not want to sit next to or opposite Bree or Karl.",
     target: { type: "characters", characterIds: ["bree", "karl"] },
-    condition: "adjacent",
+    condition: "adjacent-or-opposite",
     points: -6,
   },
 

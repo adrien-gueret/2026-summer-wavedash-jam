@@ -1,19 +1,41 @@
 import { describe, expect, it } from "vitest";
 
-import { getLevel } from "@/data/levels";
+import { tableForSix } from "@/data/tables";
 import {
   computePerfectScore,
   computeSeatingScore,
   computeTargetScore,
   computeWorstScore,
 } from "@/game/scoring";
-import type { SeatingPlan } from "@/types";
+import type { LevelDefinition, SeatingPlan } from "@/types";
 
-// Level 2 seats six guests: Martha, Henry, Andrew, Danielle, Rex and Bree.
-// Rules live globally in data/preferences.ts; only the ones whose owner and at
-// least one target are present here are active, so several canonical rules
-// (those aimed at absent guests such as Susan or Karl) never contribute.
-const level = getLevel("2")!;
+// A dedicated six-seat fixture (Martha, Henry, Andrew, Danielle, Rex and Bree)
+// so these unit tests stay independent of the shipped campaign levels. Rules
+// live globally in data/preferences.ts; only the ones whose owner and at least
+// one target are present here are active, so several canonical rules (those
+// aimed at absent guests such as Susan or Karl) never contribute. The fixture
+// deliberately omits `scoreStats`, so the derived-stats tests exercise the
+// runtime brute-force path rather than precomputed values.
+const level: LevelDefinition = {
+  id: "test-six",
+  title: "Scoring fixture",
+  description: "Six-seat fixture used by the scoring unit tests.",
+  tables: [tableForSix],
+  characterIds: ["martha", "henry", "andrew", "danielle", "rex", "bree"],
+  initialSeating: {
+    "seat-0": null,
+    "seat-1": null,
+    "seat-2": null,
+    "seat-3": null,
+    "seat-4": null,
+    "seat-5": null,
+  },
+  story: {
+    targetScoreMessage: "",
+    perfectScoreMessage: "",
+    worstScoreMessage: "",
+  },
+};
 
 function totalFor(seating: SeatingPlan): number {
   return computeSeatingScore(level, seating).total;
@@ -307,8 +329,9 @@ describe("derived score stats", () => {
   });
 
   it("computes the documented worst, target and perfect totals", () => {
-    // Derived by brute-forcing every seating of Level 2's six guests against
-    // the active canonical rules; recompute here if the roster or rules change.
+    // Derived by brute-forcing every seating of the fixture's six guests
+    // against the active canonical rules; recompute here if the roster or
+    // rules change. (These match campaign Dinner 3, which shares this roster.)
     expect(computeWorstScore(level)).toBe(-10);
     expect(computeTargetScore(level)).toBe(24);
     expect(computePerfectScore(level)).toBe(48);

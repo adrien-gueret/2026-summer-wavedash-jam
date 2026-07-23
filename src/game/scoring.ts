@@ -220,11 +220,18 @@ const scoreStatsCache = new Map<string, LevelScoreStats>();
 /**
  * Statistics over every possible seating of a level's guests: the lowest and
  * highest achievable totals plus the target score (a percentile of the whole
- * distribution). These are derived from the level's characters, preferences
- * and table geometry so they can never drift from the actual rules. The result
- * is memoized per level id since the level data is static.
+ * distribution). When a level ships precomputed `scoreStats` (generated offline
+ * by `scripts/computeLevelStats.ts`) those values are used directly, so the
+ * game never enumerates the up-to-12! permutations at runtime. Otherwise the
+ * stats are brute-forced from the level's characters, preferences and table
+ * geometry — only viable for small tables — and memoized per level id.
  */
 function computeScoreStats(level: LevelDefinition): LevelScoreStats {
+  if (level.scoreStats !== undefined) {
+    const { worst, target, perfect } = level.scoreStats;
+    return { worst, best: perfect, target };
+  }
+
   const cached = scoreStatsCache.get(level.id);
   if (cached !== undefined) {
     return cached;

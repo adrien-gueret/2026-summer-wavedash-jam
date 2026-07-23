@@ -98,7 +98,10 @@ export default function SeatingTable({
   }, [seatingPlan]);
 
   return (
-    <div className="seating-table" ref={containerRef}>
+    <div
+      className={`seating-table seating-table--seats-${table.seats.length}`}
+      ref={containerRef}
+    >
       <div className="seating-table__surface" aria-hidden="true" />
 
       {table.seats.map((seat) => {

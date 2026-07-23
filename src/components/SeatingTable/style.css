@@ -28,6 +28,44 @@
   pointer-events: none;
 }
 
+/*
+ * Larger banquet tables need more horizontal room so the long rows of seats do
+ * not overlap. The container grows wider and shorter (landscape) as the guest
+ * count rises, and the seats themselves shrink. Scaling is done via portrait
+ * size, padding and font — never a CSS transform on the resting `.seat`, whose
+ * measured rect must stay transform-free for dnd-kit hit-testing.
+ */
+.seating-table--seats-8 {
+  max-width: 600px;
+  aspect-ratio: 5 / 4;
+}
+
+.seating-table--seats-10 {
+  max-width: 680px;
+  aspect-ratio: 3 / 2;
+}
+
+.seating-table--seats-12 {
+  max-width: 760px;
+  aspect-ratio: 16 / 9;
+}
+
+.seating-table--seats-10 .portrait--medium,
+.seating-table--seats-12 .portrait--medium {
+  width: 46px;
+  height: 46px;
+}
+
+.seating-table--seats-10 .seat,
+.seating-table--seats-12 .seat {
+  padding: 5px;
+  gap: 2px;
+}
+
+.seating-table--seats-12 .seat__name {
+  font-size: 0.72rem;
+}
+
 @media (max-width: 480px) {
   .seating-table {
     max-width: 340px;

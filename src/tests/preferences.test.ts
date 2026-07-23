@@ -63,6 +63,11 @@ function makeLevel(
     tables,
     characterIds,
     initialSeating,
+    story: {
+      targetScoreMessage: "",
+      perfectScoreMessage: "",
+      worstScoreMessage: "",
+    },
   };
 }
 

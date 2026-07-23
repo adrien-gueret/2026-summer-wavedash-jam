@@ -21,21 +21,25 @@ type ResultModalProps = {
 };
 
 function resultMessage(
+  level: LevelDefinition,
   score: number,
   worstScore: number,
   targetScore: number,
   perfectScore: number,
 ): string {
+  const { targetScoreMessage, perfectScoreMessage, worstScoreMessage } =
+    level.story;
+
   if (score >= perfectScore) {
-    return "Perfect family harmony!";
+    return perfectScoreMessage;
   }
   if (score >= targetScore) {
-    return "Dinner saved!";
+    return targetScoreMessage;
   }
   if (score <= worstScore) {
-    return "Every guest is furious — the worst dinner imaginable. Impressively awful!";
+    return worstScoreMessage;
   }
-  return "Dinner disaster.";
+  return "Dinner disaster. A few too many guests wish they had stayed home.";
 }
 
 /** Position of a value on the worst→best axis, as a 0–100 percentage. */
@@ -319,7 +323,13 @@ export default function ResultModal({
               }`}
               role="status"
             >
-              {resultMessage(total, worstScore, targetScore, perfectScore)}
+              {resultMessage(
+                level,
+                total,
+                worstScore,
+                targetScore,
+                perfectScore,
+              )}
             </p>
 
             <div
@@ -333,7 +343,7 @@ export default function ResultModal({
                   className="result-modal__button result-modal__button--primary"
                   onClick={onNextLevel}
                 >
-                  {isLastLevel ? "Next" : "Next Level"}
+                  {isLastLevel ? "Next" : "Next Dinner"}
                 </button>
               )}
               {!isPerfect && (
@@ -352,7 +362,7 @@ export default function ResultModal({
                 className="result-modal__button"
                 onClick={onBackToLevels}
               >
-                Back to Level Select
+                Go to another Dinner
               </button>
             </div>
           </div>

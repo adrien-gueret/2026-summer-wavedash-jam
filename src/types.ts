@@ -101,6 +101,29 @@ export type PreferenceDefinition = {
 
 /* -------------------------------- Levels ------------------------------- */
 
+/**
+ * The result-screen flavour text for a level. Each message matches one of the
+ * three notable score tiers: reaching the completion target, achieving the
+ * best possible harmony, or bottoming out at the worst possible dinner.
+ */
+export type LevelStory = {
+  targetScoreMessage: string;
+  perfectScoreMessage: string;
+  worstScoreMessage: string;
+};
+
+/**
+ * The worst, target and perfect totals for a level, precomputed offline by
+ * brute-forcing every seating. Stored on the level so the game never has to
+ * enumerate the (up to 12!) permutations at runtime. See
+ * `scripts/computeLevelStats.ts`.
+ */
+export type LevelScoreStats = {
+  worst: number;
+  target: number;
+  perfect: number;
+};
+
 export type LevelDefinition = {
   id: string;
   title: string;
@@ -108,6 +131,13 @@ export type LevelDefinition = {
   tables: TableDefinition[];
   characterIds: CharacterId[];
   initialSeating: SeatingPlan;
+  story: LevelStory;
+  /**
+   * Precomputed score bounds. Optional so test fixtures and future levels can
+   * omit it and fall back to runtime brute-forcing (only viable for small
+   * tables). Every shipped level provides it.
+   */
+  scoreStats?: LevelScoreStats;
 };
 
 /* ------------------------------ Scoring -------------------------------- */
