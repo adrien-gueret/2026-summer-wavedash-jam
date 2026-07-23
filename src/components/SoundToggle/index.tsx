@@ -42,9 +42,8 @@ export default function SoundToggle() {
       className="sound-toggle"
       onClick={handleClick}
       aria-pressed={isAudioEnabled}
+      aria-label={isAudioEnabled ? "Mute sound" : "Enable sound"}
       title={isAudioEnabled ? "Mute sound" : "Enable sound"}
-    >
-      {isAudioEnabled ? "♪ Sound On" : "♪ Sound Off"}
-    </button>
+    />
   );
 }

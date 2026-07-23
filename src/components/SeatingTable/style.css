@@ -1,8 +1,8 @@
 .seating-table {
   position: relative;
   width: 100%;
+  height: 100%;
   max-width: 520px;
-  aspect-ratio: 1 / 1;
   margin: 0 auto;
 }
 
@@ -30,24 +30,22 @@
 
 /*
  * Larger banquet tables need more horizontal room so the long rows of seats do
- * not overlap. The container grows wider and shorter (landscape) as the guest
- * count rises, and the seats themselves shrink. Scaling is done via portrait
- * size, padding and font — never a CSS transform on the resting `.seat`, whose
- * measured rect must stay transform-free for dnd-kit hit-testing.
+ * not overlap: the wider the guest list, the wider the container is allowed to
+ * grow. Height comes from the available game area (see Game/style.css), and the
+ * seats themselves shrink. Scaling is done via portrait size, padding and font
+ * — never a CSS transform on the resting `.seat`, whose measured rect must stay
+ * transform-free for dnd-kit hit-testing.
  */
 .seating-table--seats-8 {
   max-width: 600px;
-  aspect-ratio: 5 / 4;
 }
 
 .seating-table--seats-10 {
   max-width: 680px;
-  aspect-ratio: 3 / 2;
 }
 
 .seating-table--seats-12 {
   max-width: 760px;
-  aspect-ratio: 16 / 9;
 }
 
 .seating-table--seats-10 .portrait--medium,
@@ -64,14 +62,4 @@
 
 .seating-table--seats-12 .seat__name {
   font-size: 0.72rem;
-}
-
-@media (max-width: 480px) {
-  .seating-table {
-    max-width: 340px;
-  }
-
-  .seat__name {
-    font-size: 0.72rem;
-  }
 }

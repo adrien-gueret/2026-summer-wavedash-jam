@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
+import BackButton from "@/components/BackButton";
 import CharacterBioPanel from "@/components/CharacterBioPanel";
 import FamilyTree from "@/components/FamilyTree";
 import { ROUTES } from "@/constants";
@@ -9,7 +9,6 @@ import type { CharacterId } from "@/types";
 import "./style.css";
 
 export default function AboutFamily() {
-  const navigate = useNavigate();
   const [selectedCharacterId, setSelectedCharacterId] =
     useState<CharacterId | null>(null);
 
@@ -31,17 +30,11 @@ export default function AboutFamily() {
   return (
     <main className="about-family">
       <header className="about-family__header">
-        <button
-          type="button"
-          className="about-family__back"
-          onClick={() => navigate(ROUTES.home)}
-        >
-          Back
-        </button>
-        <h1 className="about-family__title">About the Family</h1>
+        <BackButton to={ROUTES.home} className="about-family__back" />
+        <h1 className="about-family__title">Know the Family</h1>
         <p className="about-family__intro">
-          Meet the family behind the dinner-table drama. Select someone in the
-          family tree to learn more about them.
+          Meet the family behind the dinner-table drama. Hover over someone in
+          the family tree to learn more about them.
         </p>
       </header>
 

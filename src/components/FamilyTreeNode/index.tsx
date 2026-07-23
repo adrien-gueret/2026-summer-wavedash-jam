@@ -39,6 +39,8 @@ export default function FamilyTreeNode({
       aria-pressed={isSelected}
       aria-label={`Select ${character.displayName}, ${relationLabel}`}
       onClick={() => onSelect(character.id)}
+      onMouseEnter={() => onSelect(character.id)}
+      onFocus={() => onSelect(character.id)}
     >
       <CharacterPortrait character={character} size="medium" />
       <span className="family-node__name">{character.displayName}</span>

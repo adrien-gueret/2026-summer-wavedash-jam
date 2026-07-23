@@ -1,0 +1,40 @@
+.back-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px 10px 14px;
+  border: 2px solid #e4d6bd;
+  border-radius: var(--radius-md, 14px);
+  background: var(--color-surface, #fffaf0);
+  color: var(--color-primary-dark, #7a2e12);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(74, 47, 27, 0.14);
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  border-color: var(--color-primary, #b4532f);
+}
+
+.back-button:focus-visible {
+  outline: 3px solid var(--color-primary-dark, #7a2e12);
+  outline-offset: 2px;
+}
+
+.back-button__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.back-button__label {
+  line-height: 1;
+}

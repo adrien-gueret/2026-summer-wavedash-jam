@@ -5,9 +5,10 @@
   gap: 16px;
   padding: 20px 24px 24px;
   width: 100%;
+  min-width: 850px;
   max-width: 1200px;
   margin: 0 auto;
-  height: 100vh;
+  height: max(100vh, 850px);
 }
 
 .game--invalid {
@@ -40,13 +41,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 8px 0;
+  gap: 0;
+  padding: 0;
 }
 
 .game__table-area .seating-table {
   max-height: 100%;
-  max-width: 560px;
 }
 
 /* Holds one or more tables. A single table stays centered and full-size; two
@@ -168,22 +168,4 @@
 .game__button:disabled:hover {
   transform: none;
   filter: none;
-}
-
-@media (max-width: 820px) {
-  .game__layout {
-    grid-template-columns: 1fr;
-  }
-
-  .game__bottom {
-    flex-direction: column;
-  }
-
-  .game__controls {
-    justify-content: stretch;
-  }
-
-  .game__button {
-    flex: 1 1 auto;
-  }
 }

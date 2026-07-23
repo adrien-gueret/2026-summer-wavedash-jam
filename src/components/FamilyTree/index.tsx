@@ -341,10 +341,6 @@ export default function FamilyTree({
           </div>
         </div>
       </div>
-
-      <p className="family-tree__hint" aria-hidden="true">
-        Swipe to explore the family tree
-      </p>
     </div>
   );
 }

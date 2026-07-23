@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-
+import BackButton from "@/components/BackButton";
 import { ROUTES } from "@/constants";
 import type { LevelDefinition } from "@/types";
 
@@ -22,35 +21,7 @@ export default function GameHeader({
 }: GameHeaderProps) {
   return (
     <header className="game-header">
-      <Link
-        to={ROUTES.home}
-        className="game-header__home"
-        aria-label="Back to main menu"
-      >
-        <svg
-          className="game-header__home-icon"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path
-            d="M3 11.5 12 4l9 7.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M5 10.5V19a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-8.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
+      <BackButton to={ROUTES.home} ariaLabel="Back to main menu" />
 
       <div className="game-header__info">
         <p className="game-header__level">Dinner {number}</p>

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
+import BackButton from "@/components/BackButton";
 import Tooltip from "@/components/Tooltip";
 import { getPlayRoute, ROUTES } from "@/constants";
 import { LEVEL_LIST } from "@/data/levels";
@@ -21,18 +22,10 @@ const ICON_STYLE = {
 };
 
 export default function SelectLevel() {
-  const navigate = useNavigate();
-
   return (
     <main className="select-level">
       <header className="select-level__header">
-        <button
-          type="button"
-          className="select-level__back"
-          onClick={() => navigate(ROUTES.home)}
-        >
-          Back
-        </button>
+        <BackButton to={ROUTES.home} />
         <h1 className="select-level__title">Select your dinner</h1>
       </header>
 

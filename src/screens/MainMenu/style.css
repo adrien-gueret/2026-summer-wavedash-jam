@@ -101,15 +101,3 @@
   outline: 3px solid var(--color-primary-dark);
   outline-offset: 3px;
 }
-
-/* Responsive fallbacks for smaller viewports. */
-@media (max-width: 640px) {
-  .main-menu {
-    padding: 24px;
-  }
-
-  .main-menu__panel {
-    padding: 40px 28px;
-    gap: 26px;
-  }
-}

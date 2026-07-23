@@ -1,0 +1,103 @@
+.level-intro__backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6vh 16px 16px;
+  overflow-y: auto;
+  background: rgba(38, 24, 12, 0.55);
+  z-index: 100;
+  animation: level-intro-fade-in 0.2s ease;
+}
+
+.level-intro {
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: #fffaf0;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: level-intro-pop-in 0.22s ease;
+}
+
+.level-intro__level {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b4532f;
+}
+
+.level-intro__title {
+  margin: 0;
+  font-size: 1.7rem;
+  color: #4a2f1b;
+}
+
+.level-intro__description {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #6b4a30;
+}
+
+.level-intro__button {
+  margin-top: 8px;
+  padding: 12px 36px;
+  border: 2px solid #b4532f;
+  border-radius: 12px;
+  background: #b4532f;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.level-intro__button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.level-intro__button:focus-visible {
+  outline: 3px solid #7a2e12;
+  outline-offset: 2px;
+}
+
+@keyframes level-intro-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes level-intro-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .level-intro__backdrop,
+  .level-intro {
+    animation: none;
+  }
+}

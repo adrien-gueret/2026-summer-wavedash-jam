@@ -11,9 +11,11 @@ import {
 } from "@dnd-kit/core";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
+import BackButton from "@/components/BackButton";
 import CharacterPortrait from "@/components/CharacterPortrait";
 import GameHeader from "@/components/GameHeader";
 import GuestTray from "@/components/GuestTray";
+import LevelIntroModal from "@/components/LevelIntroModal";
 import PreferenceList from "@/components/PreferenceList";
 import ResultModal from "@/components/ResultModal";
 import SeatingTable from "@/components/SeatingTable";
@@ -30,7 +32,6 @@ import "./style.css";
 
 export default function Game() {
   const { levelId = "" } = useParams();
-  const navigate = useNavigate();
 
   const level = getLevel(levelId);
   const isUnlocked = usePersistentSelector((state) =>
@@ -42,13 +43,7 @@ export default function Game() {
       <main className="game game--invalid">
         <h1>Dinner unavailable</h1>
         <p>You are not invited to this dinner.</p>
-        <button
-          type="button"
-          className="game__button"
-          onClick={() => navigate(ROUTES.levels)}
-        >
-          Back to Dinner Select
-        </button>
+        <BackButton to={ROUTES.levels} label="Back to Dinner Select" />
       </main>
     );
   }
@@ -87,6 +82,9 @@ function PlayableLevel({ levelId }: { levelId: string }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   );
+
+  // The dinner opens with an intro modal; the level begins once it is dismissed.
+  const [showIntro, setShowIntro] = useState(true);
 
   const [activeDrag, setActiveDrag] = useState<{
     characterId: CharacterId;
@@ -313,6 +311,14 @@ function PlayableLevel({ levelId }: { levelId: string }) {
           onNextLevel={handleNextLevel}
           onContinue={closeResult}
           onBackToLevels={() => navigate(ROUTES.levels)}
+        />
+      )}
+
+      {showIntro && (
+        <LevelIntroModal
+          level={level}
+          number={getLevelNumber(level.id)}
+          onStart={() => setShowIntro(false)}
         />
       )}
     </main>

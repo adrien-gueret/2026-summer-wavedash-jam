@@ -78,19 +78,3 @@
   justify-content: center;
   padding-top: var(--connector-drop);
 }
-
-.family-tree__hint {
-  display: none;
-  margin: 4px 0 0;
-  font-size: 0.85rem;
-  font-style: italic;
-  color: var(--color-text-soft, #8a6a52);
-  text-align: center;
-}
-
-/* Show the swipe hint only when the tree needs horizontal scrolling. */
-@media (max-width: 720px) {
-  .family-tree__hint {
-    display: block;
-  }
-}

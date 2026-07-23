@@ -6,40 +6,6 @@
   justify-content: space-between;
 }
 
-.game-header__home {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: #fffaf0;
-  border: 2px solid #e4d6bd;
-  color: #7a2e12;
-  box-shadow: 0 4px 12px rgba(74, 47, 27, 0.14);
-  transition:
-    transform 0.15s ease,
-    filter 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.game-header__home:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-  border-color: #b4532f;
-}
-
-.game-header__home:focus-visible {
-  outline: 3px solid #7a2e12;
-  outline-offset: 2px;
-}
-
-.game-header__home-icon {
-  width: 28px;
-  height: 28px;
-}
-
 .game-header__info {
   flex: 1 1 260px;
 }
@@ -121,10 +87,4 @@
 .game-header__target-badge {
   color: #2f7a3f;
   font-weight: 700;
-}
-
-@media (max-width: 640px) {
-  .game-header__scoreboard {
-    align-items: flex-start;
-  }
 }

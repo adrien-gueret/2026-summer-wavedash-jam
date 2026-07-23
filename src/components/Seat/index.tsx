@@ -96,7 +96,7 @@ export default function Seat({
           onKeyDown={handleKeyDown}
         >
           <span className="seat__placeholder" aria-hidden="true" />
-          <span className="seat__name seat__name--empty">{seat.label}</span>
+          <span className="seat__name seat__name--empty">Empty</span>
         </button>
       </div>
     );

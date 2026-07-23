@@ -16,25 +16,6 @@
   gap: 20px;
 }
 
-.select-level__back {
-  padding: 12px 22px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    filter 0.15s ease,
-    transform 0.15s ease;
-}
-
-.select-level__back:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-}
-
-.select-level__back:focus-visible,
 .level-card--playable:focus-visible {
   outline: 3px solid var(--color-primary-dark);
   outline-offset: 3px;
@@ -158,18 +139,4 @@
   filter: none;
   opacity: 1;
   transform: scale(1.05);
-}
-
-/* Responsive fallbacks for smaller viewports. */
-@media (max-width: 640px) {
-  .select-level {
-    gap: 24px;
-    padding: 24px;
-  }
-
-  .select-level__grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    grid-auto-rows: 180px;
-    gap: 14px;
-  }
 }
