@@ -18,6 +18,14 @@ type ResultModalProps = {
   onNextLevel: () => void;
   onContinue: () => void;
   onBackToLevels: () => void;
+  /**
+   * When true the result is final (the daily dinner): the "Next Dinner" and
+   * "Improve Seating" actions are hidden, leaving only a single button to
+   * leave. The player cannot retry.
+   */
+  oneShot?: boolean;
+  /** Label of the sole button shown in one-shot mode. */
+  oneShotLabel?: string;
 };
 
 function resultMessage(
@@ -151,6 +159,8 @@ export default function ResultModal({
   onNextLevel,
   onContinue,
   onBackToLevels,
+  oneShot = false,
+  oneShotLabel = "Back to Menu",
 }: ResultModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { total } = scoreResult;
@@ -337,33 +347,45 @@ export default function ResultModal({
                 animationDone ? " result-modal__actions--revealed" : ""
               }`}
             >
-              {hasReachedTarget && (
+              {oneShot ? (
                 <button
                   type="button"
                   className="result-modal__button result-modal__button--primary"
-                  onClick={onNextLevel}
+                  onClick={onBackToLevels}
                 >
-                  {isLastLevel ? "Next" : "Next Dinner"}
+                  {oneShotLabel}
                 </button>
+              ) : (
+                <>
+                  {hasReachedTarget && (
+                    <button
+                      type="button"
+                      className="result-modal__button result-modal__button--primary"
+                      onClick={onNextLevel}
+                    >
+                      {isLastLevel ? "Next" : "Next Dinner"}
+                    </button>
+                  )}
+                  {!isPerfect && (
+                    <button
+                      type="button"
+                      className={`result-modal__button${
+                        hasReachedTarget ? "" : " result-modal__button--primary"
+                      }`}
+                      onClick={onContinue}
+                    >
+                      Improve Seating
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="result-modal__button"
+                    onClick={onBackToLevels}
+                  >
+                    Go to another Dinner
+                  </button>
+                </>
               )}
-              {!isPerfect && (
-                <button
-                  type="button"
-                  className={`result-modal__button${
-                    hasReachedTarget ? "" : " result-modal__button--primary"
-                  }`}
-                  onClick={onContinue}
-                >
-                  Improve Seating
-                </button>
-              )}
-              <button
-                type="button"
-                className="result-modal__button"
-                onClick={onBackToLevels}
-              >
-                Go to another Dinner
-              </button>
             </div>
           </div>
         </div>

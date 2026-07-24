@@ -181,6 +181,13 @@ export type PersistentState = {
   completedLevelIds: string[];
   bestScoresByLevelId: Record<string, number>;
   worstScoresByLevelId: Record<string, number>;
+  /**
+   * The score submitted for each daily dinner, keyed by its UTC date
+   * (`YYYY-MM-DD`). A present key means the player has already had that day's
+   * dinner and cannot retry it. Optional so saves created before the daily
+   * feature load without it.
+   */
+  dailyScoresByDate?: Record<string, number>;
 };
 
 export type UIState = Record<string, never>;

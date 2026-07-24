@@ -10,6 +10,8 @@ type GameHeaderProps = {
   score: number;
   allSeated: boolean;
   showScore: boolean;
+  /** Overrides the "Dinner {number}" kicker (used by the daily dinner). */
+  kicker?: string;
 };
 
 export default function GameHeader({
@@ -18,13 +20,14 @@ export default function GameHeader({
   score,
   allSeated,
   showScore,
+  kicker,
 }: GameHeaderProps) {
   return (
     <header className="game-header">
       <BackButton to={ROUTES.home} ariaLabel="Back to main menu" />
 
       <div className="game-header__info">
-        <p className="game-header__level">Dinner {number}</p>
+        <p className="game-header__level">{kicker ?? `Dinner ${number}`}</p>
         <h1 className="game-header__title">{level.title}</h1>
         <p className="game-header__instruction">{level.description}</p>
       </div>

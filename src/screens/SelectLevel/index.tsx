@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "@/components/BackButton";
 import Tooltip from "@/components/Tooltip";
 import { getPlayRoute, ROUTES } from "@/constants";
+import { getDailyDateKey } from "@/data/daily";
 import { LEVEL_LIST } from "@/data/levels";
 import { computePerfectScore, computeWorstScore } from "@/game/scoring";
 import { usePersistentSelector } from "@/state";
 import {
   selectBestScore,
+  selectDailyScore,
+  selectHasCompletedAnyLevel,
+  selectHasPlayedDaily,
   selectIsLevelCompleted,
   selectIsLevelUnlocked,
   selectWorstScore,
@@ -22,6 +26,10 @@ const ICON_STYLE = {
 };
 
 export default function SelectLevel() {
+  const hasCompletedAnyLevel = usePersistentSelector(
+    selectHasCompletedAnyLevel,
+  );
+
   return (
     <main className="select-level">
       <header className="select-level__header">
@@ -35,8 +43,42 @@ export default function SelectLevel() {
             <LevelCard entryId={entry.id} />
           </li>
         ))}
+        {hasCompletedAnyLevel && (
+          <li className="select-level__daily-item">
+            <DailyCard />
+          </li>
+        )}
       </ul>
     </main>
+  );
+}
+
+function DailyCard() {
+  const navigate = useNavigate();
+  const dateKey = getDailyDateKey();
+  const displayDate = dateKey.replace(/-/g, "/");
+
+  const hasPlayed = usePersistentSelector((state) =>
+    selectHasPlayedDaily(state, dateKey),
+  );
+  const dailyScore = usePersistentSelector((state) =>
+    selectDailyScore(state, dateKey),
+  );
+
+  return (
+    <button
+      type="button"
+      className="level-card level-card--daily"
+      onClick={() => navigate(ROUTES.daily)}
+    >
+      <span className="level-card__number">Dinner of the Day</span>
+      <span className="level-card__name">{displayDate}</span>
+      <span className="level-card__daily-status">
+        {hasPlayed
+          ? `Played today — harmony ${dailyScore}`
+          : "A fresh table, the same for everyone"}
+      </span>
+    </button>
   );
 }
 

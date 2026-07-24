@@ -57,3 +57,28 @@ export function submitLevelResult(
     unlockedLevelIds,
   };
 }
+
+/**
+ * Records the outcome of the daily dinner. The daily can be submitted only
+ * once per day, so if a score already exists for the given date the state is
+ * returned unchanged and the earlier score is kept.
+ */
+export function submitDailyResult(
+  state: PersistentState,
+  payload: { dateKey: string; score: number },
+): PersistentState {
+  const { dateKey, score } = payload;
+  const dailyScoresByDate = state.dailyScoresByDate ?? {};
+
+  if (dateKey in dailyScoresByDate) {
+    return state;
+  }
+
+  return {
+    ...state,
+    dailyScoresByDate: {
+      ...dailyScoresByDate,
+      [dateKey]: score,
+    },
+  };
+}

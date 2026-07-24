@@ -1,11 +1,16 @@
 import { useNavigate } from "react-router-dom";
 
 import { GAME_TAGLINE, GAME_TITLE, ROUTES } from "@/constants";
+import { usePersistentSelector } from "@/state";
+import { selectHasCompletedAnyLevel } from "@/state/selectors";
 
 import "./style.css";
 
 export default function MainMenu() {
   const navigate = useNavigate();
+  const hasCompletedAnyLevel = usePersistentSelector(
+    selectHasCompletedAnyLevel,
+  );
 
   return (
     <main className="main-menu">
@@ -29,6 +34,16 @@ export default function MainMenu() {
           >
             Play
           </button>
+
+          {hasCompletedAnyLevel && (
+            <button
+              type="button"
+              className="main-menu__button"
+              onClick={() => navigate(ROUTES.daily)}
+            >
+              Dinner of the Day
+            </button>
+          )}
 
           <button
             type="button"

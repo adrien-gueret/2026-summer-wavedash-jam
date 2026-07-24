@@ -26,7 +26,7 @@ import { computeTargetScore, expressionForScore } from "@/game/scoring";
 import { useLevelGame } from "@/hooks/useLevelGame";
 import { usePersistentActions, usePersistentSelector } from "@/state";
 import { selectIsLevelUnlocked } from "@/state/selectors";
-import type { CharacterId, DropTarget, SeatId } from "@/types";
+import type { CharacterId, DropTarget, LevelDefinition, SeatId } from "@/types";
 
 import "./style.css";
 
@@ -48,13 +48,20 @@ export default function Game() {
     );
   }
 
-  return <PlayableLevel key={level.id} levelId={level.id} />;
+  return <PlayableLevel key={level.id} level={level} mode="campaign" />;
 }
 
-function PlayableLevel({ levelId }: { levelId: string }) {
+type PlayableLevelProps = {
+  level: LevelDefinition;
+  mode: "campaign" | "daily";
+  /** UTC date key of the daily dinner (required when mode is "daily"). */
+  dateKey?: string;
+};
+
+export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
   const navigate = useNavigate();
-  const level = getLevel(levelId)!;
-  const { submitLevelResult } = usePersistentActions();
+  const isDaily = mode === "daily";
+  const { submitLevelResult, submitDailyResult } = usePersistentActions();
 
   const game = useLevelGame(level);
   const {
@@ -185,15 +192,30 @@ function PlayableLevel({ levelId }: { levelId: string }) {
   ]);
 
   const handleSubmit = useCallback(() => {
-    submitLevelResult({
-      levelId: level.id,
-      score: scoreResult.total,
-      targetScore: computeTargetScore(level),
-    });
+    if (isDaily) {
+      submitDailyResult({ dateKey: dateKey!, score: scoreResult.total });
+    } else {
+      submitLevelResult({
+        levelId: level.id,
+        score: scoreResult.total,
+        targetScore: computeTargetScore(level),
+      });
+    }
     submitLevel();
-  }, [level, scoreResult.total, submitLevel, submitLevelResult]);
+  }, [
+    dateKey,
+    isDaily,
+    level,
+    scoreResult.total,
+    submitDailyResult,
+    submitLevel,
+    submitLevelResult,
+  ]);
 
-  const nextLevel = useMemo(() => getNextLevel(level.id), [level.id]);
+  const nextLevel = useMemo(
+    () => (isDaily ? undefined : getNextLevel(level.id)),
+    [isDaily, level.id],
+  );
 
   const handleNextLevel = useCallback(() => {
     closeResult();
@@ -204,11 +226,20 @@ function PlayableLevel({ levelId }: { levelId: string }) {
     }
   }, [closeResult, navigate, nextLevel]);
 
+  const handleBackFromResult = useCallback(() => {
+    navigate(isDaily ? ROUTES.home : ROUTES.levels);
+  }, [isDaily, navigate]);
+
+  const kicker = isDaily ? "Dinner of the Day" : undefined;
+  const number = isDaily ? 0 : getLevelNumber(level.id);
+  const canSubmit = allSeated && !(isDaily && hasSubmitted);
+
   return (
     <main className="game">
       <GameHeader
         level={level}
-        number={getLevelNumber(level.id)}
+        number={number}
+        kicker={kicker}
         score={scoreResult.total}
         allSeated={allSeated}
         showScore={hasSubmitted}
@@ -281,7 +312,7 @@ function PlayableLevel({ levelId }: { levelId: string }) {
                 type="button"
                 className="game__button game__button--primary"
                 onClick={handleSubmit}
-                disabled={!allSeated}
+                disabled={!canSubmit}
                 aria-describedby={allSeated ? undefined : "submit-hint"}
               >
                 Submit Seating Plan
@@ -310,14 +341,17 @@ function PlayableLevel({ levelId }: { levelId: string }) {
           isLastLevel={!nextLevel}
           onNextLevel={handleNextLevel}
           onContinue={closeResult}
-          onBackToLevels={() => navigate(ROUTES.levels)}
+          onBackToLevels={handleBackFromResult}
+          oneShot={isDaily}
+          oneShotLabel="Back to Menu"
         />
       )}
 
       {showIntro && (
         <LevelIntroModal
           level={level}
-          number={getLevelNumber(level.id)}
+          number={number}
+          kicker={kicker}
           onStart={() => setShowIntro(false)}
         />
       )}

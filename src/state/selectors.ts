@@ -27,3 +27,25 @@ export function selectIsLevelUnlocked(
 ): boolean {
   return state.unlockedLevelIds.includes(levelId);
 }
+
+/**
+ * Whether the player has finished at least one campaign dinner. Used to gate
+ * the daily dinner, which only unlocks once the player has completed a level.
+ */
+export function selectHasCompletedAnyLevel(state: PersistentState): boolean {
+  return state.completedLevelIds.length > 0;
+}
+
+export function selectDailyScore(
+  state: PersistentState,
+  dateKey: string,
+): number | undefined {
+  return state.dailyScoresByDate?.[dateKey];
+}
+
+export function selectHasPlayedDaily(
+  state: PersistentState,
+  dateKey: string,
+): boolean {
+  return state.dailyScoresByDate?.[dateKey] !== undefined;
+}

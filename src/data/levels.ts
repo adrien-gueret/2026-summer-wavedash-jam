@@ -20,7 +20,7 @@ export type LevelListEntry = {
 };
 
 /** An all-empty seating plan covering every seat of the given tables. */
-function emptySeating(tables: TableDefinition[]): SeatingPlan {
+export function emptySeating(tables: TableDefinition[]): SeatingPlan {
   const plan: SeatingPlan = {};
   for (const table of tables) {
     for (const seat of table.seats) {

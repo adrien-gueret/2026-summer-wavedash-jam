@@ -8,6 +8,8 @@ type LevelIntroModalProps = {
   level: LevelDefinition;
   number: number;
   onStart: () => void;
+  /** Overrides the "Dinner {number}" kicker (used by the daily dinner). */
+  kicker?: string;
 };
 
 /**
@@ -18,6 +20,7 @@ export default function LevelIntroModal({
   level,
   number,
   onStart,
+  kicker,
 }: LevelIntroModalProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -33,7 +36,7 @@ export default function LevelIntroModal({
         aria-modal="true"
         aria-labelledby="level-intro-title"
       >
-        <p className="level-intro__level">Dinner {number}</p>
+        <p className="level-intro__level">{kicker ?? `Dinner ${number}`}</p>
         <h1 id="level-intro-title" className="level-intro__title">
           {level.title}
         </h1>

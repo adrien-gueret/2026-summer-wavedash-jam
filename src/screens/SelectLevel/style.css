@@ -140,3 +140,34 @@
   opacity: 1;
   transform: scale(1.05);
 }
+
+.select-level__daily-item {
+  grid-column: span 2;
+}
+
+.level-card--daily {
+  border: 2px solid var(--color-primary-dark);
+  background: linear-gradient(135deg, #fff4dc, #ffe6c2);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.level-card--daily:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-panel);
+}
+
+.level-card--daily:focus-visible {
+  outline: 3px solid var(--color-primary-dark);
+  outline-offset: 3px;
+}
+
+.level-card__daily-status {
+  margin-top: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}

@@ -15,6 +15,7 @@ export const ROUTES = {
   home: "/",
   levels: "/levels",
   play: "/play",
+  daily: "/daily",
   family: "/family",
   end: "/end",
 } as const;
