@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
+import { useSounds } from "wavedash-react";
+
 import { computeSeatingScore } from "@/game/scoring";
 import {
   getSeatByCharacter,
@@ -42,6 +44,9 @@ export type UseLevelGameResult = {
   closeResult: () => void;
 };
 
+/** Sound effects played when a guest is placed on a chair. */
+const SEAT_SOUND_IDS = ["seat1", "seat2"];
+
 /**
  * Owns the transient gameplay state for a single level: the current seating
  * plan (with empty seats), the inspected/grabbed guest and the result modal.
@@ -61,6 +66,14 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
     useState<CharacterId | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const { playSound } = useSounds();
+
+  const playSeatSound = useCallback(() => {
+    const soundId =
+      SEAT_SOUND_IDS[Math.floor(Math.random() * SEAT_SOUND_IDS.length)];
+    playSound(soundId);
+  }, [playSound]);
 
   const scoreResult = useMemo(
     () => computeSeatingScore(level, seatingPlan),
@@ -93,17 +106,20 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
       if (target.type === "tray") {
         if (sourceSeatId) {
           setSeatingPlan(unseatGuest(seatingPlan, sourceSeatId));
+          playSeatSound();
         }
       } else if (sourceSeatId) {
         if (sourceSeatId !== target.seatId) {
           setSeatingPlan(swapGuests(seatingPlan, sourceSeatId, target.seatId));
+          playSeatSound();
         }
       } else {
         setSeatingPlan(placeGuest(seatingPlan, characterId, target.seatId));
+        playSeatSound();
       }
       setGrabbedCharacterId(null);
     },
-    [seatingPlan],
+    [seatingPlan, playSeatSound],
   );
 
   const activateSeat = useCallback(

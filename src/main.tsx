@@ -31,12 +31,14 @@ createRoot(document.getElementById("root")!).render(
         audio: {
           menu_music: ["./audio/menu_music.ogg", "./audio/menu_music.mp3"],
           game_music: ["./audio/game_music.ogg", "./audio/game_music.mp3"],
+          seat1: ["./audio/seat1.ogg", "./audio/seat1.mp3"],
+          seat2: ["./audio/seat2.ogg", "./audio/seat2.mp3"],
         },
         /*,
         images: [],
         },*/
       }}
-      defaultMusicVolume={0.9}
+      defaultMusicVolume={0.7}
       defaultSoundsVolume={1}
     >
       <StateProvider
