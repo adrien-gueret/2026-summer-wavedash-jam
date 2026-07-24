@@ -179,3 +179,52 @@
   outline: 3px solid #7a2e12;
   outline-offset: 2px;
 }
+
+.daily-boards {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.daily-boards__title {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a2e12;
+}
+
+.daily-boards__tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.daily-boards__tab {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #b4532f;
+  border-radius: 12px;
+  background: #fffaf0;
+  color: #7a2e12;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.daily-boards__tab--active {
+  background: #b4532f;
+  color: #fffaf0;
+}
+
+.daily-boards__tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.daily-boards__tab:focus-visible {
+  outline: 3px solid #7a2e12;
+  outline-offset: 2px;
+}

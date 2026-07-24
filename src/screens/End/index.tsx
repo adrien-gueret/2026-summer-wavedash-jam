@@ -58,14 +58,14 @@ export default function End() {
           className="end__button end__button--primary"
           onClick={() => navigate(ROUTES.levels)}
         >
-          Back to Dinner Select
+          Play a Dinner
         </button>
         <button
           type="button"
           className="end__button"
           onClick={() => navigate(ROUTES.home)}
         >
-          Back to Title
+          Back to Menu
         </button>
       </div>
     </main>

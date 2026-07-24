@@ -197,3 +197,16 @@ export function getDailyLevel(
     story: objective === "worst" ? DAILY_STORY_WORST : DAILY_STORY,
   };
 }
+
+/**
+ * Name of the online leaderboard for a given day and objective, e.g.
+ * `daily-2026-07-24-best`. Each objective gets its own board so the "best" and
+ * "worst" score chases are ranked separately (and, since the puzzle rolls over
+ * daily, a fresh board opens every UTC day).
+ */
+export function getDailyLeaderboardName(
+  dateKey: string,
+  objective: DailyObjective,
+): string {
+  return `${DAILY_LEVEL_ID_PREFIX}${dateKey}-${objective}`;
+}

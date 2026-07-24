@@ -9,16 +9,16 @@ export default function NotFound() {
 
   return (
     <main className="not-found">
-      <h1 className="not-found__title">Page not found</h1>
+      <h1 className="not-found__title">Dinner not found</h1>
       <p className="not-found__text">
-        We could not find the page you were looking for.
+        We could not find the dinner you were looking for.
       </p>
       <button
         type="button"
         className="not-found__button"
         onClick={() => navigate(ROUTES.home)}
       >
-        Back to title
+        Back to Menu
       </button>
     </main>
   );

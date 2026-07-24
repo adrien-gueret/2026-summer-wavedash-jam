@@ -1,0 +1,124 @@
+.daily-leaderboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f6ecdd;
+  border: 2px solid #e3d2ba;
+}
+
+.daily-leaderboard__heading {
+  margin: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b4532f;
+}
+
+.daily-leaderboard__note {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b4a30;
+}
+
+.daily-leaderboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.daily-leaderboard__row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: #fffaf0;
+  color: #4a2f1b;
+  font-weight: 600;
+}
+
+.daily-leaderboard__row--me {
+  background: #b4532f;
+  color: #fffaf0;
+}
+
+.daily-leaderboard__rank {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: #7a2e12;
+}
+
+.daily-leaderboard__row--me .daily-leaderboard__rank {
+  color: #ffe4cf;
+}
+
+.daily-leaderboard__player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.daily-leaderboard__avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e3d2ba;
+}
+
+.daily-leaderboard__avatar--placeholder {
+  background: #e3d2ba;
+}
+
+.daily-leaderboard__row--me .daily-leaderboard__avatar {
+  background: #d98b3f;
+}
+
+.daily-leaderboard__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.daily-leaderboard__score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.daily-leaderboard__gap {
+  text-align: center;
+  color: #b79b7a;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+.daily-leaderboard--rank {
+  gap: 0;
+  padding: 12px 14px;
+  align-items: center;
+}
+
+.daily-leaderboard__rank-line {
+  margin: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b4a30;
+}
+
+.daily-leaderboard__rank-line strong {
+  color: #b4532f;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}

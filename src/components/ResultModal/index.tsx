@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import confetti from "canvas-confetti";
 
@@ -37,6 +38,11 @@ type ResultModalProps = {
    * peaceful, high-harmony evening is the failure. Defaults to "best".
    */
   objective?: DailyObjective;
+  /**
+   * Optional content rendered below the result message once the score reveal
+   * finishes (used by the daily dinner to show the leaderboard).
+   */
+  extraContent?: ReactNode;
 };
 
 function resultMessage(
@@ -177,6 +183,7 @@ export default function ResultModal({
   oneShotLabel = "Back to Menu",
   hideTarget = false,
   objective = "best",
+  extraContent,
 }: ResultModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { total } = scoreResult;
@@ -368,6 +375,10 @@ export default function ResultModal({
                 hideTarget,
               )}
             </p>
+
+            {animationDone && extraContent && (
+              <div className="result-modal__extra">{extraContent}</div>
+            )}
 
             <div
               className={`result-modal__actions${

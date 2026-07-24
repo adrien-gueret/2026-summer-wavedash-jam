@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
+import DailyLeaderboard from "@/components/DailyLeaderboard";
 import { ROUTES } from "@/constants";
-import { getDailyDateKey, getDailyLevel, msUntilNextDaily } from "@/data/daily";
+import {
+  getDailyDateKey,
+  getDailyLeaderboardName,
+  getDailyLevel,
+  msUntilNextDaily,
+} from "@/data/daily";
 import { usePersistentSelector } from "@/state";
 import {
   selectDailyObjectiveScore,
@@ -116,6 +122,8 @@ function DailyObjectivePicker({
         ))}
       </div>
 
+      <DailyLeaderboards dateKey={dateKey} />
+
       {allPlayed && (
         <div className="daily-played__panel daily-played__panel--countdown">
           <p className="daily-played__message">
@@ -176,6 +184,75 @@ function ObjectiveCard({
         {played ? `Score: ${score}` : "Not played yet"}
       </span>
     </button>
+  );
+}
+
+/**
+ * Lets the player browse today's online leaderboards. A mode's board is only
+ * viewable once its goal has been played today, so it opens defaulting to a
+ * played mode (if any) and disables the tab of an unplayed goal.
+ */
+function DailyLeaderboards({ dateKey }: { dateKey: string }) {
+  const playedBest = usePersistentSelector((state) =>
+    selectHasPlayedDailyObjective(state, dateKey, "best"),
+  );
+  const playedWorst = usePersistentSelector((state) =>
+    selectHasPlayedDailyObjective(state, dateKey, "worst"),
+  );
+
+  const isPlayed = (objective: DailyObjective) =>
+    objective === "best" ? playedBest : playedWorst;
+
+  const firstPlayed = OBJECTIVES.find((objective) =>
+    isPlayed(objective.id),
+  )?.id;
+  const [selected, setSelected] = useState<DailyObjective | null>(
+    firstPlayed ?? null,
+  );
+
+  // Nothing to show until at least one goal has been played today.
+  if (!playedBest && !playedWorst) {
+    return null;
+  }
+
+  const active = selected ?? firstPlayed ?? null;
+
+  return (
+    <section className="daily-boards" aria-label="Leaderboards">
+      <h2 className="daily-boards__title">Leaderboards</h2>
+      <div className="daily-boards__tabs" role="tablist">
+        {OBJECTIVES.map((objective) => {
+          const played = isPlayed(objective.id);
+          return (
+            <button
+              key={objective.id}
+              type="button"
+              role="tab"
+              aria-selected={active === objective.id}
+              className={`daily-boards__tab${
+                active === objective.id ? " daily-boards__tab--active" : ""
+              }`}
+              onClick={() => setSelected(objective.id)}
+              disabled={!played}
+              title={
+                played ? undefined : "Play this goal to unlock its leaderboard"
+              }
+            >
+              {objective.title}
+            </button>
+          );
+        })}
+      </div>
+
+      {active && (
+        <DailyLeaderboard
+          key={active}
+          leaderboardName={getDailyLeaderboardName(dateKey, active)}
+          objective={active}
+          variant="board"
+        />
+      )}
+    </section>
   );
 }
 

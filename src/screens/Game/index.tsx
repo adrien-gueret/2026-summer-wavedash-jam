@@ -13,6 +13,7 @@ import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 import BackButton from "@/components/BackButton";
 import CharacterPortrait from "@/components/CharacterPortrait";
+import DailyLeaderboard from "@/components/DailyLeaderboard";
 import GameHeader from "@/components/GameHeader";
 import GuestTray from "@/components/GuestTray";
 import LevelIntroModal from "@/components/LevelIntroModal";
@@ -21,7 +22,10 @@ import ResultModal from "@/components/ResultModal";
 import SeatingTable from "@/components/SeatingTable";
 import { ROUTES, getPlayRoute } from "@/constants";
 import { CHARACTERS } from "@/data/characters";
-import { DAILY_INTRO_BY_OBJECTIVE } from "@/data/daily";
+import {
+  DAILY_INTRO_BY_OBJECTIVE,
+  getDailyLeaderboardName,
+} from "@/data/daily";
 import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
 import { computeTargetScore, expressionForScore } from "@/game/scoring";
 import { useLevelGame } from "@/hooks/useLevelGame";
@@ -383,6 +387,16 @@ export function PlayableLevel({
           oneShotLabel="Back to Menu"
           hideTarget={isDaily}
           objective={objective}
+          extraContent={
+            isDaily && objective ? (
+              <DailyLeaderboard
+                leaderboardName={getDailyLeaderboardName(dateKey!, objective)}
+                objective={objective}
+                score={scoreResult.total}
+                variant="rank"
+              />
+            ) : undefined
+          }
         />
       )}
 
