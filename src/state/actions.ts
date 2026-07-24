@@ -1,7 +1,6 @@
-import type { PersistentState } from "@/types";
+import type { DailyObjective, PersistentState } from "@/types";
 
 import { getNextLevel } from "@/data/levels";
-
 /* Persistent actions */
 
 /**
@@ -59,26 +58,31 @@ export function submitLevelResult(
 }
 
 /**
- * Records the outcome of the daily dinner. The daily can be submitted only
- * once per day, so if a score already exists for the given date the state is
- * returned unchanged and the earlier score is kept.
+ * Records the outcome of the daily dinner for one objective. Each objective
+ * ("best" or "worst") can be submitted only once per day, so if a score
+ * already exists for the given date and objective the state is returned
+ * unchanged and the earlier score is kept.
  */
 export function submitDailyResult(
   state: PersistentState,
-  payload: { dateKey: string; score: number },
+  payload: { dateKey: string; objective: DailyObjective; score: number },
 ): PersistentState {
-  const { dateKey, score } = payload;
-  const dailyScoresByDate = state.dailyScoresByDate ?? {};
+  const { dateKey, objective, score } = payload;
+  const dailyResultsByDate = state.dailyResultsByDate ?? {};
+  const dayResults = dailyResultsByDate[dateKey] ?? {};
 
-  if (dateKey in dailyScoresByDate) {
+  if (objective in dayResults) {
     return state;
   }
 
   return {
     ...state,
-    dailyScoresByDate: {
-      ...dailyScoresByDate,
-      [dateKey]: score,
+    dailyResultsByDate: {
+      ...dailyResultsByDate,
+      [dateKey]: {
+        ...dayResults,
+        [objective]: score,
+      },
     },
   };
 }

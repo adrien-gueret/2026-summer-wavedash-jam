@@ -5,35 +5,58 @@ import { ROUTES } from "@/constants";
 import { getDailyDateKey, getDailyLevel, msUntilNextDaily } from "@/data/daily";
 import { usePersistentSelector } from "@/state";
 import {
-  selectDailyScore,
+  selectDailyObjectiveScore,
   selectHasCompletedAnyLevel,
-  selectHasPlayedDaily,
+  selectHasPlayedAllDailyObjectives,
+  selectHasPlayedDailyObjective,
 } from "@/state/selectors";
+import type { DailyObjective } from "@/types";
 
 import { PlayableLevel } from "@/screens/Game";
 
 import "./style.css";
 
+type ObjectiveInfo = {
+  id: DailyObjective;
+  title: string;
+  goal: string;
+};
+
+/** The two goals offered for today's dinner, in display order. */
+const OBJECTIVES: ObjectiveInfo[] = [
+  {
+    id: "best",
+    title: "Best Score",
+    goal: "Seat everyone for the highest family harmony you can reach.",
+  },
+  {
+    id: "worst",
+    title: "Worst Score",
+    goal: "Ruin the evening: aim for the lowest harmony possible.",
+  },
+];
+
 /**
  * The daily dinner: a level drawn deterministically from today's UTC date, so
- * every player gets the same puzzle. It can be submitted only once per day;
- * once played, the board is replaced by a summary until the next day's draw.
+ * every player gets the same puzzle. It can be played once per objective per
+ * day — once with the "best" goal and once with the "worst" goal. The player
+ * picks a goal, plays it, then returns to the picker until both are served.
  */
 export default function Daily() {
   const dateKey = getDailyDateKey();
-  const level = useMemo(() => getDailyLevel(dateKey), [dateKey]);
 
   const hasCompletedAnyLevel = usePersistentSelector(
     selectHasCompletedAnyLevel,
   );
-  const hasPlayed = usePersistentSelector((state) =>
-    selectHasPlayedDaily(state, dateKey),
-  );
 
-  // Freeze the decision at mount: submitting flips `hasPlayed` to true, but we
-  // keep the board mounted so its result modal can play out. The summary is
-  // shown only when the player was already done before opening the screen.
-  const [wasPlayedAtMount] = useState(hasPlayed);
+  const [objective, setObjective] = useState<DailyObjective | null>(null);
+
+  // The level (and thus its story copy) depends on the chosen objective: the
+  // "worst" goal swaps in flipped result messages where a low score wins.
+  const level = useMemo(
+    () => getDailyLevel(dateKey, objective ?? "best"),
+    [dateKey, objective],
+  );
 
   // The daily dinner unlocks only after the player finishes a campaign level.
   // A direct visit (URL or back navigation) before then bounces to the menu.
@@ -41,22 +64,34 @@ export default function Daily() {
     return <Navigate to={ROUTES.home} replace />;
   }
 
-  if (wasPlayedAtMount) {
-    return <DailyAlreadyPlayed dateKey={dateKey} />;
+  if (objective === null) {
+    return <DailyObjectivePicker dateKey={dateKey} onSelect={setObjective} />;
   }
 
   return (
-    <PlayableLevel key={dateKey} level={level} mode="daily" dateKey={dateKey} />
+    <PlayableLevel
+      key={`${dateKey}-${objective}`}
+      level={level}
+      mode="daily"
+      dateKey={dateKey}
+      objective={objective}
+      onExit={() => setObjective(null)}
+    />
   );
 }
 
-function DailyAlreadyPlayed({ dateKey }: { dateKey: string }) {
+function DailyObjectivePicker({
+  dateKey,
+  onSelect,
+}: {
+  dateKey: string;
+  onSelect: (objective: DailyObjective) => void;
+}) {
   const navigate = useNavigate();
-  const score = usePersistentSelector((state) =>
-    selectDailyScore(state, dateKey),
-  );
-
   const displayDate = dateKey.replace(/-/g, "/");
+  const allPlayed = usePersistentSelector((state) =>
+    selectHasPlayedAllDailyObjectives(state, dateKey),
+  );
 
   return (
     <main className="daily-played">
@@ -65,15 +100,30 @@ function DailyAlreadyPlayed({ dateKey }: { dateKey: string }) {
         <h1 className="daily-played__title">{displayDate}</h1>
       </header>
 
-      <div className="daily-played__panel">
-        <p className="daily-played__label">Today's family harmony</p>
-        <p className="daily-played__score">{score}</p>
-        <p className="daily-played__message">
-          You have already served today's dinner. Come back for a fresh table
-          in:
-        </p>
-        <NextDinnerCountdown />
+      <p className="daily-played__lead">
+        Two ways to host today's table: one to keep the peace, one to break it.
+        You can attempt each goal once.
+      </p>
+
+      <div className="daily-objectives">
+        {OBJECTIVES.map((objective) => (
+          <ObjectiveCard
+            key={objective.id}
+            dateKey={dateKey}
+            objective={objective}
+            onSelect={onSelect}
+          />
+        ))}
       </div>
+
+      {allPlayed && (
+        <div className="daily-played__panel daily-played__panel--countdown">
+          <p className="daily-played__message">
+            Both goals served. Come back for a fresh table in:
+          </p>
+          <NextDinnerCountdown />
+        </div>
+      )}
 
       <div className="daily-played__actions">
         <button
@@ -92,6 +142,40 @@ function DailyAlreadyPlayed({ dateKey }: { dateKey: string }) {
         </button>
       </div>
     </main>
+  );
+}
+
+function ObjectiveCard({
+  dateKey,
+  objective,
+  onSelect,
+}: {
+  dateKey: string;
+  objective: ObjectiveInfo;
+  onSelect: (objective: DailyObjective) => void;
+}) {
+  const played = usePersistentSelector((state) =>
+    selectHasPlayedDailyObjective(state, dateKey, objective.id),
+  );
+  const score = usePersistentSelector((state) =>
+    selectDailyObjectiveScore(state, dateKey, objective.id),
+  );
+
+  return (
+    <button
+      type="button"
+      className={`daily-objective daily-objective--${objective.id}${
+        played ? " daily-objective--played" : ""
+      }`}
+      onClick={() => onSelect(objective.id)}
+      disabled={played}
+    >
+      <span className="daily-objective__title">{objective.title}</span>
+      <span className="daily-objective__goal">{objective.goal}</span>
+      <span className="daily-objective__status">
+        {played ? `Score: ${score}` : "Not played yet"}
+      </span>
+    </button>
   );
 }
 

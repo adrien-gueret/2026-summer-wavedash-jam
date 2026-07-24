@@ -176,18 +176,26 @@ export type SeatRelation = "wanted" | "unwanted";
 
 /* ------------------------------- State --------------------------------- */
 
+/**
+ * The two ways to play the daily dinner: "best" chases the highest possible
+ * harmony, "worst" the lowest. Each can be played once per day.
+ */
+export type DailyObjective = "best" | "worst";
+
 export type PersistentState = {
   unlockedLevelIds: string[];
   completedLevelIds: string[];
   bestScoresByLevelId: Record<string, number>;
   worstScoresByLevelId: Record<string, number>;
   /**
-   * The score submitted for each daily dinner, keyed by its UTC date
-   * (`YYYY-MM-DD`). A present key means the player has already had that day's
-   * dinner and cannot retry it. Optional so saves created before the daily
-   * feature load without it.
+   * The scores submitted for each daily dinner, keyed by its UTC date
+   * (`YYYY-MM-DD`) and then by objective. Each daily can be played once per
+   * objective per day: the "best" objective chases the highest harmony, the
+   * "worst" objective the lowest. A present objective key means the player has
+   * already had that day's dinner for that objective and cannot retry it.
+   * Optional so saves created before the daily feature load without it.
    */
-  dailyScoresByDate?: Record<string, number>;
+  dailyResultsByDate?: Record<string, Partial<Record<DailyObjective, number>>>;
 };
 
 export type UIState = Record<string, never>;

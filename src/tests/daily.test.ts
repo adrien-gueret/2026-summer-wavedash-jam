@@ -84,28 +84,47 @@ describe("submitDailyResult", () => {
     completedLevelIds: [],
     bestScoresByLevelId: {},
     worstScoresByLevelId: {},
-    dailyScoresByDate: {},
+    dailyResultsByDate: {},
   };
 
-  it("records the score for a day not yet played", () => {
+  it("records the score for an objective not yet played", () => {
     const next = submitDailyResult(baseState, {
       dateKey: "2026-07-24",
+      objective: "best",
       score: 12,
     });
-    expect(next.dailyScoresByDate).toEqual({ "2026-07-24": 12 });
+    expect(next.dailyResultsByDate).toEqual({ "2026-07-24": { best: 12 } });
   });
 
-  it("keeps the first score and ignores a second submission", () => {
+  it("records both objectives independently for the same day", () => {
+    const best = submitDailyResult(baseState, {
+      dateKey: "2026-07-24",
+      objective: "best",
+      score: 12,
+    });
+    const both = submitDailyResult(best, {
+      dateKey: "2026-07-24",
+      objective: "worst",
+      score: -8,
+    });
+    expect(both.dailyResultsByDate).toEqual({
+      "2026-07-24": { best: 12, worst: -8 },
+    });
+  });
+
+  it("keeps the first score and ignores a second submission for the same objective", () => {
     const once = submitDailyResult(baseState, {
       dateKey: "2026-07-24",
+      objective: "best",
       score: 12,
     });
     const twice = submitDailyResult(once, {
       dateKey: "2026-07-24",
+      objective: "best",
       score: 30,
     });
     expect(twice).toBe(once);
-    expect(twice.dailyScoresByDate).toEqual({ "2026-07-24": 12 });
+    expect(twice.dailyResultsByDate).toEqual({ "2026-07-24": { best: 12 } });
   });
 
   it("handles a legacy state without a daily map", () => {
@@ -117,8 +136,9 @@ describe("submitDailyResult", () => {
     };
     const next = submitDailyResult(legacy, {
       dateKey: "2026-07-24",
+      objective: "worst",
       score: 7,
     });
-    expect(next.dailyScoresByDate).toEqual({ "2026-07-24": 7 });
+    expect(next.dailyResultsByDate).toEqual({ "2026-07-24": { worst: 7 } });
   });
 });

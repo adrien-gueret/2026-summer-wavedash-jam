@@ -9,7 +9,7 @@ const INITIAL_PERSISTENT_STATE: PersistentState = {
   completedLevelIds: [],
   bestScoresByLevelId: {},
   worstScoresByLevelId: {},
-  dailyScoresByDate: {},
+  dailyResultsByDate: {},
 };
 
 const persistent = defineState({

@@ -1,4 +1,9 @@
-import type { CharacterId, LevelDefinition, TableDefinition } from "@/types";
+import type {
+  CharacterId,
+  DailyObjective,
+  LevelDefinition,
+  TableDefinition,
+} from "@/types";
 
 import { emptySeating } from "./levels";
 import { getActivePreferencesForLevel } from "./preferences";
@@ -47,6 +52,20 @@ const DAILY_DESCRIPTION =
   "Another day, another questionable family dinner. Seat today's guests, keep " +
   "the peace... or deliberately ruin everything.";
 
+/**
+ * Objective-specific intro flavour. The daily can be played twice a day — once
+ * chasing the best score, once the worst — so the intro modal spells out which
+ * goal the player picked.
+ */
+export const DAILY_INTRO_BY_OBJECTIVE: Record<DailyObjective, string> = {
+  best:
+    "Another day, another questionable family dinner. Seat today's guests and " +
+    "keep the peace and aim for the highest family harmony you can.",
+  worst:
+    "Another day, another questionable family dinner. Forget the peace: seat " +
+    "today's guests to cause chaos and live the best drama ever.",
+};
+
 const DAILY_STORY = {
   targetScoreMessage:
     "The plates are empty and nobody has stormed out. Today's dinner is a success.",
@@ -54,6 +73,22 @@ const DAILY_STORY = {
     "Against all expectations, today's family dinner was absolutely perfect.",
   worstScoreMessage:
     "Raised voices, awkward silences and one very broken evening. A perfect disaster.",
+};
+
+/**
+ * Story copy for the "worst" objective, where a *low* harmony score is the
+ * goal. The messages are keyed to the same score bands as {@link DAILY_STORY}
+ * (perfect = high harmony, worst = low harmony), but the wording is flipped so
+ * a near-worst score reads as a triumph and a peaceful evening reads as a
+ * failure.
+ */
+const DAILY_STORY_WORST = {
+  targetScoreMessage:
+    "A few sparks flew, but the evening never quite descended into chaos.",
+  perfectScoreMessage:
+    "Everyone got along beautifully — a lovely evening, and a complete failure at ruining it.",
+  worstScoreMessage:
+    "Slammed doors, cold stares and tears in the punch bowl. A perfect disaster, exactly as planned.",
 };
 
 /**
@@ -146,6 +181,7 @@ function titleForDateKey(dateKey: string): string {
  */
 export function getDailyLevel(
   dateKey: string = getDailyDateKey(),
+  objective: DailyObjective = "best",
 ): LevelDefinition {
   const random = mulberry32(dateKeyToSeed(dateKey));
   const characterIds = drawRoster(random);
@@ -158,6 +194,6 @@ export function getDailyLevel(
     tables,
     characterIds,
     initialSeating: emptySeating(tables),
-    story: DAILY_STORY,
+    story: objective === "worst" ? DAILY_STORY_WORST : DAILY_STORY,
   };
 }

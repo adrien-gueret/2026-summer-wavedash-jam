@@ -58,7 +58,7 @@ export default function End() {
           className="end__button end__button--primary"
           onClick={() => navigate(ROUTES.levels)}
         >
-          Back to Level Select
+          Back to Dinner Select
         </button>
         <button
           type="button"

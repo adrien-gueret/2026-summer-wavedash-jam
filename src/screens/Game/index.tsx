@@ -21,12 +21,19 @@ import ResultModal from "@/components/ResultModal";
 import SeatingTable from "@/components/SeatingTable";
 import { ROUTES, getPlayRoute } from "@/constants";
 import { CHARACTERS } from "@/data/characters";
+import { DAILY_INTRO_BY_OBJECTIVE } from "@/data/daily";
 import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
 import { computeTargetScore, expressionForScore } from "@/game/scoring";
 import { useLevelGame } from "@/hooks/useLevelGame";
 import { usePersistentActions, usePersistentSelector } from "@/state";
 import { selectIsLevelUnlocked } from "@/state/selectors";
-import type { CharacterId, DropTarget, LevelDefinition, SeatId } from "@/types";
+import type {
+  CharacterId,
+  DailyObjective,
+  DropTarget,
+  LevelDefinition,
+  SeatId,
+} from "@/types";
 
 import "./style.css";
 
@@ -56,9 +63,22 @@ type PlayableLevelProps = {
   mode: "campaign" | "daily";
   /** UTC date key of the daily dinner (required when mode is "daily"). */
   dateKey?: string;
+  /** Which daily objective is being played (required when mode is "daily"). */
+  objective?: DailyObjective;
+  /**
+   * Called instead of navigating away when leaving the daily result. Lets the
+   * daily screen return to its objective picker rather than the main menu.
+   */
+  onExit?: () => void;
 };
 
-export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
+export function PlayableLevel({
+  level,
+  mode,
+  dateKey,
+  objective,
+  onExit,
+}: PlayableLevelProps) {
   const navigate = useNavigate();
   const isDaily = mode === "daily";
   const { submitLevelResult, submitDailyResult } = usePersistentActions();
@@ -193,7 +213,11 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
 
   const handleSubmit = useCallback(() => {
     if (isDaily) {
-      submitDailyResult({ dateKey: dateKey!, score: scoreResult.total });
+      submitDailyResult({
+        dateKey: dateKey!,
+        objective: objective!,
+        score: scoreResult.total,
+      });
     } else {
       submitLevelResult({
         levelId: level.id,
@@ -206,6 +230,7 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
     dateKey,
     isDaily,
     level,
+    objective,
     scoreResult.total,
     submitDailyResult,
     submitLevel,
@@ -227,10 +252,21 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
   }, [closeResult, navigate, nextLevel]);
 
   const handleBackFromResult = useCallback(() => {
-    navigate(isDaily ? ROUTES.home : ROUTES.levels);
-  }, [isDaily, navigate]);
+    if (isDaily) {
+      if (onExit) {
+        onExit();
+      } else {
+        navigate(ROUTES.home);
+      }
+      return;
+    }
+    navigate(ROUTES.levels);
+  }, [isDaily, navigate, onExit]);
 
-  const kicker = isDaily ? "Dinner of the Day" : undefined;
+  const objectiveLabel = objective === "worst" ? "Worst score" : "Best score";
+  const kicker = isDaily ? `Dinner of the Day · ${objectiveLabel}` : undefined;
+  const introDescription =
+    isDaily && objective ? DAILY_INTRO_BY_OBJECTIVE[objective] : undefined;
   const number = isDaily ? 0 : getLevelNumber(level.id);
   const canSubmit = allSeated && !(isDaily && hasSubmitted);
 
@@ -240,6 +276,7 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
         level={level}
         number={number}
         kicker={kicker}
+        description={introDescription}
         score={scoreResult.total}
         allSeated={allSeated}
         showScore={hasSubmitted}
@@ -344,6 +381,8 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
           onBackToLevels={handleBackFromResult}
           oneShot={isDaily}
           oneShotLabel="Back to Menu"
+          hideTarget={isDaily}
+          objective={objective}
         />
       )}
 
@@ -352,6 +391,7 @@ export function PlayableLevel({ level, mode, dateKey }: PlayableLevelProps) {
           level={level}
           number={number}
           kicker={kicker}
+          description={introDescription}
           onStart={() => setShowIntro(false)}
         />
       )}

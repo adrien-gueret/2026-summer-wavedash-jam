@@ -12,6 +12,8 @@ type GameHeaderProps = {
   showScore: boolean;
   /** Overrides the "Dinner {number}" kicker (used by the daily dinner). */
   kicker?: string;
+  /** Overrides `level.description` (used by the daily objective flavour). */
+  description?: string;
 };
 
 export default function GameHeader({
@@ -21,6 +23,7 @@ export default function GameHeader({
   allSeated,
   showScore,
   kicker,
+  description,
 }: GameHeaderProps) {
   return (
     <header className="game-header">
@@ -29,7 +32,9 @@ export default function GameHeader({
       <div className="game-header__info">
         <p className="game-header__level">{kicker ?? `Dinner ${number}`}</p>
         <h1 className="game-header__title">{level.title}</h1>
-        <p className="game-header__instruction">{level.description}</p>
+        <p className="game-header__instruction">
+          {description ?? level.description}
+        </p>
       </div>
 
       {showScore && (

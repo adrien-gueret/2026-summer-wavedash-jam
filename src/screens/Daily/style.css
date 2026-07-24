@@ -69,6 +69,80 @@
   line-height: 1.5;
 }
 
+.daily-played__lead {
+  margin: 0;
+  max-width: 520px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.daily-played__panel--countdown {
+  gap: 6px;
+}
+
+.daily-objectives {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  width: 100%;
+  max-width: 620px;
+}
+
+.daily-objective {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 24px;
+  border: 2px solid #b4532f;
+  border-radius: 16px;
+  background: #fffaf0;
+  color: #6b4a30;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.daily-objective:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(122, 46, 18, 0.18);
+}
+
+.daily-objective:focus-visible {
+  outline: 3px solid #7a2e12;
+  outline-offset: 3px;
+}
+
+.daily-objective--worst {
+  border-color: #7a2e12;
+}
+
+.daily-objective--played {
+  cursor: default;
+  opacity: 0.7;
+  background: #f2e6d5;
+}
+
+.daily-objective__title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #7a2e12;
+}
+
+.daily-objective__goal {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.daily-objective__status {
+  margin-top: auto;
+  padding-top: 6px;
+  font-weight: 700;
+  color: #b4532f;
+}
+
 .daily-played__countdown {
   margin: 8px 0 0;
   font-size: 2rem;

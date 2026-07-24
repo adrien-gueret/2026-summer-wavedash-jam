@@ -7,8 +7,7 @@ import {
   computeTargetScore,
   computeWorstScore,
 } from "@/game/scoring";
-import type { LevelDefinition, ScoreResult } from "@/types";
-
+import type { DailyObjective, LevelDefinition, ScoreResult } from "@/types";
 import "./style.css";
 
 type ResultModalProps = {
@@ -26,6 +25,18 @@ type ResultModalProps = {
   oneShot?: boolean;
   /** Label of the sole button shown in one-shot mode. */
   oneShotLabel?: string;
+  /**
+   * When true the completion target is hidden entirely: no target flag on the
+   * gauge and no target-reached celebration. Used by the daily dinner, which
+   * is a pure score chase (highest or lowest) with no success threshold.
+   */
+  hideTarget?: boolean;
+  /**
+   * The score the player is chasing. "worst" flips which end of the gauge is a
+   * triumph: a near-worst score is the win (disaster celebration) while a
+   * peaceful, high-harmony evening is the failure. Defaults to "best".
+   */
+  objective?: DailyObjective;
 };
 
 function resultMessage(
@@ -34,6 +45,7 @@ function resultMessage(
   worstScore: number,
   targetScore: number,
   perfectScore: number,
+  hideTarget: boolean,
 ): string {
   const { targetScoreMessage, perfectScoreMessage, worstScoreMessage } =
     level.story;
@@ -41,11 +53,13 @@ function resultMessage(
   if (score >= perfectScore) {
     return perfectScoreMessage;
   }
-  if (score >= targetScore) {
-    return targetScoreMessage;
-  }
   if (score <= worstScore) {
     return worstScoreMessage;
+  }
+  // Without a target the middle band reuses the target message as neutral
+  // flavour; with a target it distinguishes reaching it from falling short.
+  if (hideTarget || score >= targetScore) {
+    return targetScoreMessage;
   }
   return "Dinner disaster. A few too many guests wish they had stayed home.";
 }
@@ -161,14 +175,20 @@ export default function ResultModal({
   onBackToLevels,
   oneShot = false,
   oneShotLabel = "Back to Menu",
+  hideTarget = false,
+  objective = "best",
 }: ResultModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { total } = scoreResult;
   const perfectScore = computePerfectScore(level);
   const worstScore = computeWorstScore(level);
   const targetScore = computeTargetScore(level);
-  const hasReachedTarget = total >= targetScore;
-  const isPerfect = total >= perfectScore;
+  const chasingWorst = objective === "worst";
+  const hasReachedTarget = !hideTarget && total >= targetScore;
+  // When chasing the worst score, a high-harmony evening is a failure, not a
+  // triumph, so the "perfect" celebration is suppressed. A near-worst score
+  // still lights up the disaster shower below (via `isWorst`).
+  const isPerfect = !chasingWorst && total >= perfectScore;
   const isWorst = total <= worstScore;
 
   const resultIcon = isPerfect
@@ -281,7 +301,11 @@ export default function ResultModal({
         <div
           className="result-modal__gauge"
           role="img"
-          aria-label={`Final score ${total} out of a range from ${worstScore} to ${perfectScore}, target ${targetScore}.`}
+          aria-label={
+            hideTarget
+              ? `Final score ${total} out of a range from ${worstScore} to ${perfectScore}.`
+              : `Final score ${total} out of a range from ${worstScore} to ${perfectScore}, target ${targetScore}.`
+          }
         >
           <div className="result-modal__gauge-track">
             <div
@@ -290,15 +314,17 @@ export default function ResultModal({
               }`}
               style={{ width: `${animatedFill}%` }}
             />
-            <div
-              className="result-modal__gauge-target"
-              style={{ left: `${targetPercent}%` }}
-              aria-hidden="true"
-            >
-              <span className="result-modal__gauge-target-flag">
-                Target {targetScore}
-              </span>
-            </div>
+            {!hideTarget && (
+              <div
+                className="result-modal__gauge-target"
+                style={{ left: `${targetPercent}%` }}
+                aria-hidden="true"
+              >
+                <span className="result-modal__gauge-target-flag">
+                  Target {targetScore}
+                </span>
+              </div>
+            )}
           </div>
           <div className="result-modal__gauge-bounds">
             <span className="result-modal__gauge-bound">
@@ -339,6 +365,7 @@ export default function ResultModal({
                 worstScore,
                 targetScore,
                 perfectScore,
+                hideTarget,
               )}
             </p>
 

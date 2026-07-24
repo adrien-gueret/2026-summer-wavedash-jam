@@ -9,9 +9,8 @@ import { computePerfectScore, computeWorstScore } from "@/game/scoring";
 import { usePersistentSelector } from "@/state";
 import {
   selectBestScore,
-  selectDailyScore,
+  selectDailyObjectiveScore,
   selectHasCompletedAnyLevel,
-  selectHasPlayedDaily,
   selectIsLevelCompleted,
   selectIsLevelUnlocked,
   selectWorstScore,
@@ -58,12 +57,17 @@ function DailyCard() {
   const dateKey = getDailyDateKey();
   const displayDate = dateKey.replace(/-/g, "/");
 
-  const hasPlayed = usePersistentSelector((state) =>
-    selectHasPlayedDaily(state, dateKey),
+  const bestScore = usePersistentSelector((state) =>
+    selectDailyObjectiveScore(state, dateKey, "best"),
   );
-  const dailyScore = usePersistentSelector((state) =>
-    selectDailyScore(state, dateKey),
+  const worstScore = usePersistentSelector((state) =>
+    selectDailyObjectiveScore(state, dateKey, "worst"),
   );
+
+  const formatObjective = (label: string, score: number | undefined) =>
+    `${label}: ${score === undefined ? "—" : score}`;
+
+  const anyPlayed = bestScore !== undefined || worstScore !== undefined;
 
   return (
     <button
@@ -74,9 +78,12 @@ function DailyCard() {
       <span className="level-card__number">Dinner of the Day</span>
       <span className="level-card__name">{displayDate}</span>
       <span className="level-card__daily-status">
-        {hasPlayed
-          ? `Played today — harmony ${dailyScore}`
-          : "A fresh table, the same for everyone"}
+        {anyPlayed
+          ? `${formatObjective("Best", bestScore)} · ${formatObjective(
+              "Worst",
+              worstScore,
+            )}`
+          : "Two goals, one table - the same for everyone"}
       </span>
     </button>
   );

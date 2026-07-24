@@ -1,4 +1,4 @@
-import type { PersistentState } from "@/types";
+import type { DailyObjective, PersistentState } from "@/types";
 
 export function selectBestScore(
   state: PersistentState,
@@ -36,16 +36,29 @@ export function selectHasCompletedAnyLevel(state: PersistentState): boolean {
   return state.completedLevelIds.length > 0;
 }
 
-export function selectDailyScore(
+export function selectDailyObjectiveScore(
   state: PersistentState,
   dateKey: string,
+  objective: DailyObjective,
 ): number | undefined {
-  return state.dailyScoresByDate?.[dateKey];
+  return state.dailyResultsByDate?.[dateKey]?.[objective];
 }
 
-export function selectHasPlayedDaily(
+export function selectHasPlayedDailyObjective(
+  state: PersistentState,
+  dateKey: string,
+  objective: DailyObjective,
+): boolean {
+  return selectDailyObjectiveScore(state, dateKey, objective) !== undefined;
+}
+
+/** Whether both daily objectives have been played for the given date. */
+export function selectHasPlayedAllDailyObjectives(
   state: PersistentState,
   dateKey: string,
 ): boolean {
-  return state.dailyScoresByDate?.[dateKey] !== undefined;
+  return (
+    selectHasPlayedDailyObjective(state, dateKey, "best") &&
+    selectHasPlayedDailyObjective(state, dateKey, "worst")
+  );
 }
