@@ -34,9 +34,25 @@ createRoot(document.getElementById("root")!).render(
           seat1: ["./audio/seat1.ogg", "./audio/seat1.mp3"],
           seat2: ["./audio/seat2.ogg", "./audio/seat2.mp3"],
         },
-        /*,
-        images: [],
-        },*/
+        images: [
+          "./images/logo.png",
+          "./images/icons.png",
+          "./images/table.png",
+          "./images/tablecloth.png",
+          "./images/sound.png",
+          "./images/characters/andrew_min.png",
+          "./images/characters/angela_min.png",
+          "./images/characters/bree.png",
+          "./images/characters/danielle.png",
+          "./images/characters/henry.png",
+          "./images/characters/julie.png",
+          "./images/characters/karl.png",
+          "./images/characters/martha.png",
+          "./images/characters/paul.png",
+          "./images/characters/rex.png",
+          "./images/characters/susan.png",
+          "./images/characters/zach.png",
+        ],
       }}
       defaultMusicVolume={0.7}
       defaultSoundsVolume={1}
