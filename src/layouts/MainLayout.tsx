@@ -2,6 +2,7 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
 
 import SoundToggle from "@/components/SoundToggle";
 import { useAchievementSync } from "@/hooks/useAchievementSync";
+import { ActiveGameProvider } from "@/hooks/useActiveGame";
 
 function MainLayout() {
   // Keep the save-derived achievements (campaign progress, daily played) in
@@ -9,11 +10,11 @@ function MainLayout() {
   useAchievementSync();
 
   return (
-    <>
+    <ActiveGameProvider>
       <ScrollRestoration />
       <SoundToggle />
       <Outlet />
-    </>
+    </ActiveGameProvider>
   );
 }
 

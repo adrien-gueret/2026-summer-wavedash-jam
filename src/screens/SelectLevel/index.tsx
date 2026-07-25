@@ -106,15 +106,16 @@ function LevelCard({ entryId }: { entryId: string }) {
     selectWorstScore(state, entry.id),
   );
 
-  const isPlayable = entry.isPlayable && isUnlocked;
+  const isPlayable = isUnlocked;
 
   if (!isPlayable) {
     return (
       <div
         className="level-card level-card--locked"
-        aria-label={`Dinner ${entry.number}. Locked.`}
+        aria-label={`Dinner ${entry.number}. ${entry.title}. Locked.`}
       >
         <span className="level-card__number">Dinner {entry.number}</span>
+        <span className="level-card__name">{entry.title}</span>
         <span className="level-card__status">
           <span
             className="level-card__badge level-card__badge--locked"
@@ -127,21 +128,12 @@ function LevelCard({ entryId }: { entryId: string }) {
     );
   }
 
-  const perfectScore = entry.definition
-    ? computePerfectScore(entry.definition)
-    : undefined;
-  const worstPossible = entry.definition
-    ? computeWorstScore(entry.definition)
-    : undefined;
+  const perfectScore = computePerfectScore(entry.definition);
+  const worstPossible = computeWorstScore(entry.definition);
 
-  const perfectAchieved =
-    bestScore !== undefined &&
-    perfectScore !== undefined &&
-    bestScore >= perfectScore;
+  const perfectAchieved = bestScore !== undefined && bestScore >= perfectScore;
   const disasterAchieved =
-    worstScore !== undefined &&
-    worstPossible !== undefined &&
-    worstScore <= worstPossible;
+    worstScore !== undefined && worstScore <= worstPossible;
 
   const successLabel = isCompleted
     ? "This dinner was a success!"

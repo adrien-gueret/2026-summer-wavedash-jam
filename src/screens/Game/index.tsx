@@ -29,6 +29,7 @@ import {
 import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
 import { computeTargetScore, expressionForScore } from "@/game/scoring";
 import { useAchievements } from "@/hooks/useAchievements";
+import { useActiveGame } from "@/hooks/useActiveGame";
 import { useLevelGame } from "@/hooks/useLevelGame";
 import { usePersistentActions, usePersistentSelector } from "@/state";
 import { selectIsLevelUnlocked } from "@/state/selectors";
@@ -88,6 +89,15 @@ export function PlayableLevel({
   const isDaily = mode === "daily";
   const { submitLevelResult, submitDailyResult } = usePersistentActions();
   const unlockAchievement = useAchievements();
+
+  // Mark a game as active while this screen is mounted so the soundtrack plays
+  // game music during play and menu music everywhere else (including the daily
+  // objective picker, which is not part of this component).
+  const { setGameActive } = useActiveGame();
+  useEffect(() => {
+    setGameActive(true);
+    return () => setGameActive(false);
+  }, [setGameActive]);
 
   const game = useLevelGame(level);
   const {

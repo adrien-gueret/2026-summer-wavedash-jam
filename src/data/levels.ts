@@ -15,8 +15,7 @@ export type LevelListEntry = {
   id: string;
   number: number;
   title: string;
-  isPlayable: boolean;
-  definition?: LevelDefinition;
+  definition: LevelDefinition;
 };
 
 /** An all-empty seating plan covering every seat of the given tables. */
@@ -291,21 +290,12 @@ export const LEVELS: LevelDefinition[] = levelData.map((level) => ({
   scoreStats: SCORE_STATS[level.id],
 }));
 
-export const LEVEL_LIST: LevelListEntry[] = Array.from(
-  { length: 10 },
-  (_, index) => {
-    const number = index + 1;
-    const definition = LEVELS[index];
-
-    return {
-      id: definition ? definition.id : String(number),
-      number,
-      title: definition ? definition.title : "Locked",
-      isPlayable: Boolean(definition),
-      definition,
-    };
-  },
-);
+export const LEVEL_LIST: LevelListEntry[] = LEVELS.map((definition, index) => ({
+  id: definition.id,
+  number: index + 1,
+  title: definition.title,
+  definition,
+}));
 
 export function getLevel(levelId: string): LevelDefinition | undefined {
   return LEVELS.find((level) => level.id === levelId);
