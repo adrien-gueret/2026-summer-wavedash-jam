@@ -28,6 +28,7 @@ import {
 } from "@/data/daily";
 import { getLevel, getLevelNumber, getNextLevel } from "@/data/levels";
 import { computeTargetScore, expressionForScore } from "@/game/scoring";
+import { useAchievements } from "@/hooks/useAchievements";
 import { useLevelGame } from "@/hooks/useLevelGame";
 import { usePersistentActions, usePersistentSelector } from "@/state";
 import { selectIsLevelUnlocked } from "@/state/selectors";
@@ -86,6 +87,7 @@ export function PlayableLevel({
   const navigate = useNavigate();
   const isDaily = mode === "daily";
   const { submitLevelResult, submitDailyResult } = usePersistentActions();
+  const unlockAchievement = useAchievements();
 
   const game = useLevelGame(level);
   const {
@@ -97,6 +99,7 @@ export function PlayableLevel({
     grabbedCharacterId,
     isResultOpen,
     hasSubmitted,
+    hasMovedSeatedGuest,
     inspectCharacter,
     clearInspection,
     dropGuest,
@@ -229,16 +232,35 @@ export function PlayableLevel({
         targetScore: computeTargetScore(level),
       });
     }
+
+    // Achievements earned by the act of submitting this full seating plan.
+    if (!hasMovedSeatedGuest) {
+      unlockAchievement("NO_UNSEAT");
+    }
+    const hasViolation = scoreResult.characters.some((character) =>
+      character.preferences.some(
+        (preference) => preference.status === "violated",
+      ),
+    );
+    if (!hasViolation) {
+      unlockAchievement("PEACEKEEPER");
+    }
+    if (!isDaily && scoreResult.total === computeTargetScore(level)) {
+      unlockAchievement("EXACT_TARGET");
+    }
+
     submitLevel();
   }, [
     dateKey,
+    hasMovedSeatedGuest,
     isDaily,
     level,
     objective,
-    scoreResult.total,
+    scoreResult,
     submitDailyResult,
     submitLevel,
     submitLevelResult,
+    unlockAchievement,
   ]);
 
   const nextLevel = useMemo(

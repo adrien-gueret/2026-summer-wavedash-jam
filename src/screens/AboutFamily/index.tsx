@@ -1,20 +1,39 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import BackButton from "@/components/BackButton";
 import CharacterBioPanel from "@/components/CharacterBioPanel";
 import FamilyTree from "@/components/FamilyTree";
 import { ROUTES } from "@/constants";
+import { CHARACTERS } from "@/data/characters";
+import { useAchievements } from "@/hooks/useAchievements";
 import type { CharacterId } from "@/types";
 
 import "./style.css";
 
+/** The whole family; the "Genealogist" achievement asks to view every one. */
+const FAMILY_SIZE = Object.keys(CHARACTERS).length;
+
 export default function AboutFamily() {
   const [selectedCharacterId, setSelectedCharacterId] =
     useState<CharacterId | null>(null);
+  const unlockAchievement = useAchievements();
+  const viewedCharacterIds = useRef<Set<CharacterId>>(new Set());
 
-  const handleSelect = useCallback((characterId: CharacterId) => {
-    setSelectedCharacterId(characterId);
-  }, []);
+  const handleSelect = useCallback(
+    (characterId: CharacterId) => {
+      setSelectedCharacterId(characterId);
+
+      // "Genealogist" unlocks once every family member has been looked at.
+      const viewed = viewedCharacterIds.current;
+      if (!viewed.has(characterId)) {
+        viewed.add(characterId);
+        if (viewed.size >= FAMILY_SIZE) {
+          unlockAchievement("FAMILY_HISTORIAN");
+        }
+      }
+    },
+    [unlockAchievement],
+  );
 
   // Escape clears the current selection.
   useEffect(() => {

@@ -29,6 +29,13 @@ export type UseLevelGameResult = {
   grabbedCharacterId: CharacterId | null;
   isResultOpen: boolean;
   hasSubmitted: boolean;
+  /**
+   * Whether an already-seated guest has ever been moved, swapped or bumped
+   * back to the tray during this attempt. Stays false when every guest is
+   * placed straight onto an empty seat, which the "Nailed It" achievement
+   * rewards. Reset by `resetLevel`.
+   */
+  hasMovedSeatedGuest: boolean;
   inspectCharacter: (characterId: CharacterId) => void;
   clearInspection: () => void;
   dropGuest: (
@@ -66,6 +73,7 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
     useState<CharacterId | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [hasMovedSeatedGuest, setHasMovedSeatedGuest] = useState(false);
 
   const { playSound } = useSounds();
 
@@ -106,14 +114,21 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
       if (target.type === "tray") {
         if (sourceSeatId) {
           setSeatingPlan(unseatGuest(seatingPlan, sourceSeatId));
+          setHasMovedSeatedGuest(true);
           playSeatSound();
         }
       } else if (sourceSeatId) {
         if (sourceSeatId !== target.seatId) {
           setSeatingPlan(swapGuests(seatingPlan, sourceSeatId, target.seatId));
+          setHasMovedSeatedGuest(true);
           playSeatSound();
         }
       } else {
+        // Placing from the tray onto an occupied seat bumps its occupant back
+        // to the tray, which counts as moving an already-seated guest.
+        if (seatingPlan[target.seatId]) {
+          setHasMovedSeatedGuest(true);
+        }
         setSeatingPlan(placeGuest(seatingPlan, characterId, target.seatId));
         playSeatSound();
       }
@@ -152,6 +167,7 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
     setSeatingPlan(level.initialSeating);
     setInspectedCharacterId(null);
     setGrabbedCharacterId(null);
+    setHasMovedSeatedGuest(false);
   }, [level.initialSeating]);
 
   const submitLevel = useCallback(() => {
@@ -174,6 +190,7 @@ export function useLevelGame(level: LevelDefinition): UseLevelGameResult {
     grabbedCharacterId,
     isResultOpen,
     hasSubmitted,
+    hasMovedSeatedGuest,
     inspectCharacter,
     clearInspection,
     dropGuest,
