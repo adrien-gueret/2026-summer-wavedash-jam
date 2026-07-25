@@ -226,27 +226,32 @@ export function PlayableLevel({
         score: scoreResult.total,
       });
     } else {
+      const targetScore = computeTargetScore(level);
       submitLevelResult({
         levelId: level.id,
         score: scoreResult.total,
-        targetScore: computeTargetScore(level),
+        targetScore,
       });
-    }
 
-    // Achievements earned by the act of submitting this full seating plan.
-    if (!hasMovedSeatedGuest) {
-      unlockAchievement("NO_UNSEAT");
-    }
-    const hasViolation = scoreResult.characters.some((character) =>
-      character.preferences.some(
-        (preference) => preference.status === "violated",
-      ),
-    );
-    if (!hasViolation) {
-      unlockAchievement("PEACEKEEPER");
-    }
-    if (!isDaily && scoreResult.total === computeTargetScore(level)) {
-      unlockAchievement("EXACT_TARGET");
+      // Style achievements are only awarded for a *successful* dinner (score
+      // at or above target). The daily has no pass/fail target, so these apply
+      // to the campaign only.
+      if (scoreResult.total >= targetScore) {
+        if (!hasMovedSeatedGuest) {
+          unlockAchievement("NO_UNSEAT");
+        }
+        const hasViolation = scoreResult.characters.some((character) =>
+          character.preferences.some(
+            (preference) => preference.status === "violated",
+          ),
+        );
+        if (!hasViolation) {
+          unlockAchievement("PEACEKEEPER");
+        }
+        if (scoreResult.total === targetScore) {
+          unlockAchievement("EXACT_TARGET");
+        }
+      }
     }
 
     submitLevel();
