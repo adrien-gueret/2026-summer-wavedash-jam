@@ -25,10 +25,6 @@ const ICON_STYLE = {
 };
 
 export default function SelectLevel() {
-  const hasCompletedAnyLevel = usePersistentSelector(
-    selectHasCompletedAnyLevel,
-  );
-
   return (
     <main className="select-level">
       <header className="select-level__header">
@@ -42,11 +38,9 @@ export default function SelectLevel() {
             <LevelCard entryId={entry.id} />
           </li>
         ))}
-        {hasCompletedAnyLevel && (
-          <li className="select-level__daily-item">
-            <DailyCard />
-          </li>
-        )}
+        <li className="select-level__daily-item">
+          <DailyCard />
+        </li>
       </ul>
     </main>
   );
@@ -57,12 +51,35 @@ function DailyCard() {
   const dateKey = getDailyDateKey();
   const displayDate = dateKey.replace(/-/g, "/");
 
+  const hasCompletedAnyLevel = usePersistentSelector(
+    selectHasCompletedAnyLevel,
+  );
   const bestScore = usePersistentSelector((state) =>
     selectDailyObjectiveScore(state, dateKey, "best"),
   );
   const worstScore = usePersistentSelector((state) =>
     selectDailyObjectiveScore(state, dateKey, "worst"),
   );
+
+  if (!hasCompletedAnyLevel) {
+    return (
+      <div
+        className="level-card level-card--locked"
+        aria-label="Dinner of the Day. Locked. Finish your first dinner to unlock it."
+      >
+        <span className="level-card__number">Dinner of the Day</span>
+        <span className="level-card__name">{displayDate}</span>
+        <span className="level-card__status">
+          <span
+            className="level-card__badge level-card__badge--locked"
+            style={ICON_STYLE}
+            aria-hidden="true"
+          />
+          Finish your first dinner to unlock
+        </span>
+      </div>
+    );
+  }
 
   const formatObjective = (label: string, score: number | undefined) =>
     `${label}: ${score === undefined ? "—" : score}`;
