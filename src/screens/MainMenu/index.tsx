@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { GAME_TAGLINE, GAME_TITLE, ROUTES } from "@/constants";
+import { useFullscreen } from "@/hooks/useFullscreen";
 import { usePersistentSelector } from "@/state";
 import { selectHasCompletedAnyLevel } from "@/state/selectors";
 
@@ -8,9 +9,15 @@ import "./style.css";
 
 export default function MainMenu() {
   const navigate = useNavigate();
+  const requestFullscreen = useFullscreen();
   const hasCompletedAnyLevel = usePersistentSelector(
     selectHasCompletedAnyLevel,
   );
+
+  const goTo = (route: string) => {
+    requestFullscreen();
+    navigate(route);
+  };
 
   return (
     <main className="main-menu">
@@ -30,7 +37,7 @@ export default function MainMenu() {
           <button
             type="button"
             className="main-menu__button main-menu__button--primary"
-            onClick={() => navigate(ROUTES.levels)}
+            onClick={() => goTo(ROUTES.levels)}
           >
             Play
           </button>
@@ -39,7 +46,7 @@ export default function MainMenu() {
             <button
               type="button"
               className="main-menu__button"
-              onClick={() => navigate(ROUTES.daily)}
+              onClick={() => goTo(ROUTES.daily)}
             >
               Dinner of the Day
             </button>
@@ -48,7 +55,7 @@ export default function MainMenu() {
           <button
             type="button"
             className="main-menu__button"
-            onClick={() => navigate(ROUTES.family)}
+            onClick={() => goTo(ROUTES.family)}
           >
             Know the Family
           </button>
