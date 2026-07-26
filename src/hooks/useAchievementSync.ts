@@ -23,7 +23,7 @@ const CAMPAIGN_COUNT = LEVELS.length;
  * - `FIRST_/ALL_DISASTER` — worst score reaches the level's worst total.
  * - `DAILY_FIRST`         — any daily dinner has been played.
  *
- * The remaining achievements (`EXACT_TARGET`, `NO_UNSEAT`, `PEACEKEEPER`,
+ * The remaining achievements (`EXACT_TARGET`, `NO_UNSEAT`,
  * `FAMILY_HISTORIAN`) are one-off events unlocked where they happen.
  */
 export function useAchievementSync(): void {

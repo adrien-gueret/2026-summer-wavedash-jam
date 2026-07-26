@@ -16,7 +16,6 @@ export type AchievementId =
   | "EXACT_TARGET"
   | "DAILY_FIRST"
   | "NO_UNSEAT"
-  | "PEACEKEEPER"
   | "FAMILY_HISTORIAN";
 
 /**

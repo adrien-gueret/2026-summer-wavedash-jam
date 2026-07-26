@@ -250,14 +250,6 @@ export function PlayableLevel({
         if (!hasMovedSeatedGuest) {
           unlockAchievement("NO_UNSEAT");
         }
-        const hasViolation = scoreResult.characters.some((character) =>
-          character.preferences.some(
-            (preference) => preference.status === "violated",
-          ),
-        );
-        if (!hasViolation) {
-          unlockAchievement("PEACEKEEPER");
-        }
         if (scoreResult.total === targetScore) {
           unlockAchievement("EXACT_TARGET");
         }
